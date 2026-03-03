@@ -2,6 +2,7 @@ import { getExerciseById, getAllExercises } from '@/lib/exerciseDb';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Breadcrumb from '@/app/components/Breadcrumb';
+import MuscleBadge from '@/app/components/MuscleBadge';
 
 export default async function ExerciseDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -89,12 +90,7 @@ export default async function ExerciseDetailPage({ params }: { params: Promise<{
               </h2>
               <div className="flex flex-wrap gap-2">
                 {exercise.muscle_groups.map(muscle => (
-                  <span
-                    key={muscle}
-                    className="px-4 py-2 bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-100 rounded-lg font-medium capitalize"
-                  >
-                    {muscle}
-                  </span>
+                  <MuscleBadge key={muscle} muscle={muscle} size="md" />
                 ))}
               </div>
 
@@ -140,12 +136,7 @@ export default async function ExerciseDetailPage({ params }: { params: Promise<{
                       </span>
                     )}
                     {sharedMuscles.map(muscle => (
-                      <span
-                        key={muscle}
-                        className="px-2 py-0.5 bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-100 rounded text-xs capitalize"
-                      >
-                        {muscle}
-                      </span>
+                      <MuscleBadge key={muscle} muscle={muscle} size="sm" />
                     ))}
                   </div>
                   <p className="text-xs text-zinc-500 dark:text-zinc-400 capitalize mt-auto">

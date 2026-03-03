@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import MuscleBadge from '@/app/components/MuscleBadge';
 
 interface Exercise {
   id: string;
@@ -220,12 +221,7 @@ export default function ExerciseSearch() {
                   <span className="font-semibold text-zinc-700 dark:text-zinc-300">Muscles: </span>
                   <div className="flex gap-1 flex-wrap mt-1">
                     {exercise.muscle_groups.map(muscle => (
-                      <span
-                        key={muscle}
-                        className="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded text-xs capitalize"
-                      >
-                        {muscle}
-                      </span>
+                      <MuscleBadge key={muscle} muscle={muscle} size="sm" />
                     ))}
                   </div>
                 </div>
