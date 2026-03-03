@@ -9,7 +9,7 @@ export default function ExercisesPage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900">
-      <div className="container mx-auto p-8 max-w-7xl">
+      <div className="container mx-auto p-8 max-w-5xl">
         <h1 className="text-4xl font-bold mb-8 text-zinc-900 dark:text-zinc-50">
           Exercise Database
         </h1>

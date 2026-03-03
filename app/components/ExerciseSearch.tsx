@@ -78,7 +78,7 @@ export default function ExerciseSearch() {
   const hasActiveFilters = query || selectedCategory || selectedMuscleGroup || selectedMechanics;
 
   return (
-    <div className="w-full max-w-6xl mx-auto p-6">
+    <div className="w-full">
       <div className="bg-white dark:bg-zinc-800 rounded-lg shadow-lg p-6 mb-6">
         <h2 className="text-2xl font-bold mb-6 text-zinc-900 dark:text-zinc-50">
           Search Exercises

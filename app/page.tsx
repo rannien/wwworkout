@@ -7,8 +7,8 @@ export default function Home() {
   const muscleGroups = getUniqueMuscleGroups();
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-900 font-sans">
-      <main className="flex min-h-screen w-full max-w-5xl flex-col items-center justify-center py-16 px-8 sm:px-16">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900 font-sans">
+      <main className="flex min-h-screen w-full max-w-5xl flex-col items-center justify-center py-16 px-8 mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold mb-4 text-zinc-900 dark:text-zinc-50">
             WWWorkout
@@ -22,7 +22,7 @@ export default function Home() {
         </div>
 
         {/* Main Action Cards */}
-        <div className="grid gap-6 md:grid-cols-2 w-full max-w-3xl mb-12">
+        <div className="grid gap-6 md:grid-cols-2 w-full mb-12">
           <Link 
             href="/exercises"
             className="group bg-white dark:bg-zinc-800 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-200 border border-zinc-200 dark:border-zinc-700 hover:scale-105"
@@ -69,7 +69,7 @@ export default function Home() {
         </div>
 
         {/* Quick Stats */}
-        <div className="w-full max-w-3xl">
+        <div className="w-full">
           <h3 className="text-lg font-semibold mb-4 text-zinc-900 dark:text-zinc-50 text-center">
             Quick Overview
           </h3>
@@ -102,7 +102,7 @@ export default function Home() {
         </div>
 
         {/* Features */}
-        <div className="mt-12 w-full max-w-3xl">
+        <div className="mt-12 w-full">
           <h3 className="text-lg font-semibold mb-4 text-zinc-900 dark:text-zinc-50 text-center">
             Features
           </h3>
