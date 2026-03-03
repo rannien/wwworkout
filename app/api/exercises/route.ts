@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { 
   filterExercises,
+  getAllExercises,
   getUniqueCategories,
   getUniqueMuscleGroups,
   getUniqueMechanics,
@@ -22,6 +23,7 @@ export async function GET(request: NextRequest) {
   // Return filter options if requested
   if (filters === 'true') {
     return NextResponse.json({
+      total: getAllExercises().length,
       categories: getUniqueCategories(),
       muscleGroups: getUniqueMuscleGroups(),
       mechanics: getUniqueMechanics(),

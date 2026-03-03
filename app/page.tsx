@@ -21,50 +21,28 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Main Action Cards */}
-        <div className="grid gap-6 md:grid-cols-2 w-full mb-12">
-          <Link 
+        {/* Main Action Card */}
+        <div className="w-full mb-12">
+          <Link
             href="/exercises"
-            className="group bg-white dark:bg-zinc-800 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-200 border border-zinc-200 dark:border-zinc-700 hover:scale-105"
+            className="group bg-white dark:bg-zinc-800 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-200 border border-zinc-200 dark:border-zinc-700 hover:scale-105 flex items-center justify-between"
           >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">
-                Browse All
+            <div>
+              <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50 mb-2">
+                Browse & Search Exercises
               </h2>
-              <svg 
-                className="w-6 h-6 text-blue-500 group-hover:translate-x-1 transition-transform" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
+              <p className="text-zinc-600 dark:text-zinc-400">
+                Search and filter exercises by name, category, muscle group, mechanics, or movement pattern.
+              </p>
             </div>
-            <p className="text-zinc-600 dark:text-zinc-400">
-              View all exercises with detailed information about mechanics, movement patterns, and targeted muscle groups.
-            </p>
-          </Link>
-
-          <Link 
-            href="/exercises/search"
-            className="group bg-white dark:bg-zinc-800 rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-200 border border-zinc-200 dark:border-zinc-700 hover:scale-105"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">
-                Search
-              </h2>
-              <svg 
-                className="w-6 h-6 text-green-500 group-hover:scale-110 transition-transform" 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-            <p className="text-zinc-600 dark:text-zinc-400">
-              Search and filter exercises by name, category, muscle group, mechanics, or movement pattern.
-            </p>
+            <svg
+              className="w-6 h-6 text-blue-500 group-hover:translate-x-1 transition-transform shrink-0 ml-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
           </Link>
         </div>
 
