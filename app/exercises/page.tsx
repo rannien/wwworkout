@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getAllExercises, getUniqueCategories, getUniqueMuscleGroups, getExerciseStats } from '@/lib/exerciseDb';
+import Breadcrumb from '@/app/components/Breadcrumb';
 
 export default function ExercisesPage() {
   const exercises = getAllExercises();
@@ -10,6 +11,11 @@ export default function ExercisesPage() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900">
       <div className="container mx-auto p-8 max-w-5xl">
+        <Breadcrumb items={[
+          { label: 'Home', href: '/' },
+          { label: 'Exercises' },
+        ]} />
+
         <h1 className="text-4xl font-bold mb-8 text-zinc-900 dark:text-zinc-50">
           Exercise Database
         </h1>

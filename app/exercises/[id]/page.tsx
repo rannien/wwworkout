@@ -1,6 +1,7 @@
 import { getExerciseById, getAllExercises, filterByMovementPattern } from '@/lib/exerciseDb';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import Breadcrumb from '@/app/components/Breadcrumb';
 
 export default async function ExerciseDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -28,18 +29,11 @@ export default async function ExerciseDetailPage({ params }: { params: Promise<{
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900">
       <div className="container mx-auto p-8 max-w-5xl">
-        {/* Breadcrumb */}
-        <nav className="mb-6 text-sm">
-          <Link href="/" className="text-blue-600 hover:text-blue-800 dark:text-blue-400">
-            Home
-          </Link>
-          <span className="mx-2 text-zinc-400">/</span>
-          <Link href="/exercises" className="text-blue-600 hover:text-blue-800 dark:text-blue-400">
-            Exercises
-          </Link>
-          <span className="mx-2 text-zinc-400">/</span>
-          <span className="text-zinc-600 dark:text-zinc-400">{exercise.name}</span>
-        </nav>
+        <Breadcrumb items={[
+          { label: 'Home', href: '/' },
+          { label: 'Exercises', href: '/exercises' },
+          { label: exercise.name },
+        ]} />
 
         {/* Main Content */}
         <div className="bg-white dark:bg-zinc-800 rounded-xl shadow-lg p-8 mb-8">
