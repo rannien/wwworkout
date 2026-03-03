@@ -2,8 +2,9 @@ import { getExerciseById, getAllExercises, filterByMovementPattern } from '@/lib
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-export default function ExerciseDetailPage({ params }: { params: { id: string } }) {
-  const exercise = getExerciseById(params.id);
+export default async function ExerciseDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const exercise = getExerciseById(id);
 
   if (!exercise) {
     notFound();
@@ -11,7 +12,7 @@ export default function ExerciseDetailPage({ params }: { params: { id: string } 
 
   // Find similar exercises based on movement pattern and muscle groups
   const similarExercises = getAllExercises()
-    .filter(ex => 
+    .filter(ex =>
       ex.id !== exercise.id && (
         ex.movement_pattern === exercise.movement_pattern ||
         ex.muscle_groups.some(mg => exercise.muscle_groups.includes(mg))
@@ -76,7 +77,7 @@ export default function ExerciseDetailPage({ params }: { params: { id: string } 
                     </span>
                     <div className="flex gap-2">
                       {exercise.category.map(cat => (
-                        <span 
+                        <span
                           key={cat}
                           className="px-3 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-100 rounded-full text-sm font-medium capitalize"
                         >
@@ -96,7 +97,7 @@ export default function ExerciseDetailPage({ params }: { params: { id: string } 
               </h2>
               <div className="flex flex-wrap gap-2">
                 {exercise.muscle_groups.map(muscle => (
-                  <span 
+                  <span
                     key={muscle}
                     className="px-4 py-2 bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-100 rounded-lg font-medium capitalize"
                   >
@@ -145,7 +146,7 @@ export default function ExerciseDetailPage({ params }: { params: { id: string } 
                   </p>
                   <div className="flex gap-1 flex-wrap mt-2">
                     {alt.muscle_groups.slice(0, 2).map(muscle => (
-                      <span 
+                      <span
                         key={muscle}
                         className="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded text-xs capitalize"
                       >
@@ -198,7 +199,7 @@ export default function ExerciseDetailPage({ params }: { params: { id: string } 
                     </div>
                     <div className="flex gap-1 flex-wrap mt-2">
                       {similar.muscle_groups.map(muscle => (
-                        <span 
+                        <span
                           key={muscle}
                           className="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded text-xs capitalize"
                         >
