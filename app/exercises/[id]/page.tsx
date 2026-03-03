@@ -1,4 +1,4 @@
-import { getExerciseById, getAllExercises, filterByMovementPattern } from '@/lib/exerciseDb';
+import { getExerciseById, getAllExercises } from '@/lib/exerciseDb';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Breadcrumb from '@/app/components/Breadcrumb';
@@ -11,20 +11,18 @@ export default async function ExerciseDetailPage({ params }: { params: Promise<{
     notFound();
   }
 
-  // Find similar exercises based on movement pattern and muscle groups
+  // Score and rank exercises by both movement pattern match and muscle group overlap
   const similarExercises = getAllExercises()
-    .filter(ex =>
-      ex.id !== exercise.id && (
-        ex.movement_pattern === exercise.movement_pattern ||
-        ex.muscle_groups.some(mg => exercise.muscle_groups.includes(mg))
-      )
-    )
-    .slice(0, 6);
-
-  // Find alternatives with same movement pattern
-  const alternatives = filterByMovementPattern(exercise.movement_pattern)
     .filter(ex => ex.id !== exercise.id)
-    .slice(0, 4);
+    .map(ex => {
+      const samePattern = ex.movement_pattern === exercise.movement_pattern;
+      const sharedMuscles = ex.muscle_groups.filter(mg => exercise.muscle_groups.includes(mg));
+      const score = (samePattern ? 2 : 0) + sharedMuscles.length;
+      return { ex, score, samePattern, sharedMuscles };
+    })
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 8);
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900">
@@ -116,92 +114,43 @@ export default async function ExerciseDetailPage({ params }: { params: Promise<{
           </div>
         </div>
 
-        {/* Alternatives Section */}
-        {alternatives.length > 0 && (
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-4 text-zinc-900 dark:text-zinc-50">
-              Alternative Exercises
-              <span className="text-sm font-normal text-zinc-500 dark:text-zinc-400 ml-2">
-                (Same movement pattern)
-              </span>
-            </h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {alternatives.map(alt => (
-                <Link
-                  key={alt.id}
-                  href={`/exercises/${alt.id}`}
-                  className="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-4 hover:shadow-lg hover:scale-105 transition-all duration-200"
-                >
-                  <h3 className="font-bold text-zinc-900 dark:text-zinc-50 mb-2">
-                    {alt.name}
-                  </h3>
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400 capitalize">
-                    {alt.mechanics}
-                  </p>
-                  <div className="flex gap-1 flex-wrap mt-2">
-                    {alt.muscle_groups.slice(0, 2).map(muscle => (
-                      <span
-                        key={muscle}
-                        className="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded text-xs capitalize"
-                      >
-                        {muscle}
-                      </span>
-                    ))}
-                    {alt.muscle_groups.length > 2 && (
-                      <span className="px-2 py-0.5 text-zinc-500 text-xs">
-                        +{alt.muscle_groups.length - 2} more
-                      </span>
-                    )}
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* Similar Exercises Section */}
         {similarExercises.length > 0 && (
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-4 text-zinc-900 dark:text-zinc-50">
               Similar Exercises
               <span className="text-sm font-normal text-zinc-500 dark:text-zinc-400 ml-2">
-                (Similar muscle groups)
+                (Ranked by movement pattern & muscle group match)
               </span>
             </h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {similarExercises.map(similar => (
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {similarExercises.map(({ ex: similar, samePattern, sharedMuscles }) => (
                 <Link
                   key={similar.id}
                   href={`/exercises/${similar.id}`}
-                  className="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-5 hover:shadow-lg hover:scale-105 transition-all duration-200"
+                  className="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-4 hover:shadow-lg hover:scale-105 transition-all duration-200 flex flex-col gap-2"
                 >
-                  <h3 className="font-bold text-lg text-zinc-900 dark:text-zinc-50 mb-2">
+                  <h3 className="font-bold text-zinc-900 dark:text-zinc-50">
                     {similar.name}
                   </h3>
-                  <div className="space-y-2 text-sm">
-                    <div>
-                      <span className="font-semibold text-zinc-700 dark:text-zinc-300">Pattern: </span>
-                      <span className="text-zinc-600 dark:text-zinc-400 capitalize">
+                  <div className="flex flex-wrap gap-1">
+                    {samePattern && (
+                      <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 rounded text-xs font-medium capitalize">
                         {similar.movement_pattern}
                       </span>
-                    </div>
-                    <div>
-                      <span className="font-semibold text-zinc-700 dark:text-zinc-300">Type: </span>
-                      <span className="text-zinc-600 dark:text-zinc-400 capitalize">
-                        {similar.mechanics}
+                    )}
+                    {sharedMuscles.map(muscle => (
+                      <span
+                        key={muscle}
+                        className="px-2 py-0.5 bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-100 rounded text-xs capitalize"
+                      >
+                        {muscle}
                       </span>
-                    </div>
-                    <div className="flex gap-1 flex-wrap mt-2">
-                      {similar.muscle_groups.map(muscle => (
-                        <span
-                          key={muscle}
-                          className="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded text-xs capitalize"
-                        >
-                          {muscle}
-                        </span>
-                      ))}
-                    </div>
+                    ))}
                   </div>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 capitalize mt-auto">
+                    {similar.mechanics}
+                  </p>
                 </Link>
               ))}
             </div>
