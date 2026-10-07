@@ -1,4 +1,5 @@
 import exercisesData from '../exercises-latest.json';
+import { matchesExerciseFilters, type ExerciseFilterCriteria, type ExerciseFilterOptions } from './exerciseFilters';
 
 export interface Exercise {
   id: string;
@@ -75,74 +76,44 @@ export function filterByMovementPattern(pattern: string): Exercise[] {
   );
 }
 
-// Advanced filter with multiple criteria
-export function filterExercises(filters: {
-  query?: string;
-  category?: string;
-  muscleGroup?: string;
-  mechanics?: string;
-  movementPattern?: string;
-}): Exercise[] {
-  let exercises = getAllExercises();
-
-  if (filters.query) {
-    exercises = exercises.filter(ex => {
-      const lowerQuery = filters.query!.toLowerCase();
-      return (
-        ex.name.toLowerCase().includes(lowerQuery) ||
-        ex.muscle_groups.some(mg => mg.toLowerCase().includes(lowerQuery)) ||
-        ex.movement_pattern.toLowerCase().includes(lowerQuery)
-      );
-    });
-  }
-
-  if (filters.category) {
-    exercises = exercises.filter(ex =>
-      ex.category.includes(filters.category!.toLowerCase())
-    );
-  }
-
-  if (filters.muscleGroup) {
-    const lowerMuscle = filters.muscleGroup.toLowerCase();
-    exercises = exercises.filter(ex =>
-      ex.muscle_groups.some(mg => mg.toLowerCase() === lowerMuscle)
-    );
-  }
-
-  if (filters.mechanics) {
-    exercises = exercises.filter(ex =>
-      ex.mechanics.toLowerCase() === filters.mechanics!.toLowerCase()
-    );
-  }
-
-  if (filters.movementPattern) {
-    exercises = exercises.filter(ex =>
-      ex.movement_pattern.toLowerCase() === filters.movementPattern!.toLowerCase()
-    );
-  }
-
-  return exercises;
+export function filterExercises(criteria: ExerciseFilterCriteria): Exercise[] {
+  return getAllExercises().filter(ex => matchesExerciseFilters(ex, criteria));
 }
 
 // Get unique values for filters
 export function getUniqueCategories(): string[] {
   const categories = getAllExercises().flatMap(ex => ex.category);
-  return [...new Set(categories)].sort();
+  return [...new Set(categories)].toSorted();
 }
 
 export function getUniqueMuscleGroups(): string[] {
   const muscleGroups = getAllExercises().flatMap(ex => ex.muscle_groups);
-  return [...new Set(muscleGroups)].sort();
+  return [...new Set(muscleGroups)].toSorted();
 }
 
 export function getUniqueMechanics(): string[] {
   const mechanics = getAllExercises().map(ex => ex.mechanics);
-  return [...new Set(mechanics)].sort();
+  return [...new Set(mechanics)].toSorted();
 }
 
 export function getUniqueMovementPatterns(): string[] {
   const patterns = getAllExercises().map(ex => ex.movement_pattern);
-  return [...new Set(patterns)].sort();
+  return [...new Set(patterns)].toSorted();
+}
+
+export function getExerciseFilterOptions(): ExerciseFilterOptions {
+  return {
+    categories: getUniqueCategories(),
+    muscleGroups: getUniqueMuscleGroups(),
+    mechanics: getUniqueMechanics(),
+    movementPatterns: getUniqueMovementPatterns(),
+  };
+}
+
+export function getMuscleGroupStats(): { muscleGroup: string; count: number }[] {
+  return getUniqueMuscleGroups()
+    .map(muscleGroup => ({ muscleGroup, count: filterByMuscleGroup(muscleGroup).length }))
+    .toSorted((a, b) => b.count - a.count);
 }
 
 // Statistics
