@@ -7,29 +7,33 @@ export interface BreadcrumbItem {
 
 export default function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
   return (
-    <nav className="mb-6 text-sm">
-      {items.map((item, index) => {
-        const isLast = index === items.length - 1;
-        return (
-          <span key={index}>
-            {index > 0 && (
-              <span className="mx-2 text-zinc-400">/</span>
-            )}
-            {item.href && !isLast ? (
-              <Link
-                href={item.href}
-                className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
-              >
-                {item.label}
-              </Link>
-            ) : (
-              <span className="text-zinc-600 dark:text-zinc-400">
-                {item.label}
-              </span>
-            )}
-          </span>
-        );
-      })}
+    <nav aria-label="Breadcrumb" className="mb-6 text-sm">
+      <ol className="glass inline-flex max-w-full flex-wrap items-center gap-x-2 gap-y-1 rounded-full px-4 py-2">
+        {items.map((item, index) => {
+          const isLast = index === items.length - 1;
+          return (
+            <li key={index} className="flex items-center gap-2">
+              {index > 0 && (
+                <span aria-hidden="true" className="text-zinc-500 dark:text-zinc-400">
+                  /
+                </span>
+              )}
+              {item.href && !isLast ? (
+                <Link
+                  href={item.href}
+                  className="font-medium text-sky-700 transition hover:text-sky-900 focus-visible:outline-2 focus-visible:outline-sky-500 dark:text-sky-300 dark:hover:text-sky-100"
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <span aria-current={isLast ? 'page' : undefined} className="text-zinc-700 dark:text-zinc-300">
+                  {item.label}
+                </span>
+              )}
+            </li>
+          );
+        })}
+      </ol>
     </nav>
   );
 }

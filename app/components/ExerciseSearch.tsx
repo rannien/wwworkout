@@ -1,248 +1,268 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import Link from 'next/link';
-import MuscleBadge from '@/app/components/MuscleBadge';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import type { Exercise } from '@/lib/exerciseDb';
+import {
+  EMPTY_EXERCISE_FILTERS,
+  MAX_QUERY_LENGTH,
+  exerciseFiltersToSearchParams,
+  hasActiveExerciseFilters,
+  matchesExerciseFilters,
+  parseExerciseFilters,
+  type ExerciseFilterOptions,
+  type ExerciseFilters,
+} from '@/lib/exerciseFilters';
+import {
+  DEFAULT_EXERCISE_LIST_VIEW,
+  exerciseListViewToSearchParams,
+  parseExerciseGrouping,
+  parseExerciseListView,
+  sortExercises,
+  type ExerciseGrouping,
+  type ExerciseLayout,
+  type ExerciseListView,
+} from '@/lib/exerciseList';
+import ExerciseResults from '@/app/components/ExerciseResults';
 
-interface Exercise {
+const URL_SYNC_DELAY_MS = 300;
+
+const LAYOUT_OPTIONS: { value: ExerciseLayout; label: string }[] = [
+  { value: 'cards', label: 'Cards' },
+  { value: 'table', label: 'Table' },
+];
+
+const GROUPING_OPTIONS: { value: ExerciseGrouping; label: string }[] = [
+  { value: 'none', label: 'No grouping' },
+  { value: 'movementPattern', label: 'Movement pattern' },
+  { value: 'muscleGroup', label: 'Muscle group' },
+];
+
+interface ExerciseSearchProps {
+  exercises: Exercise[];
+  filterOptions: ExerciseFilterOptions;
+}
+
+interface SelectOption {
+  value: string;
+  label: string;
+}
+
+interface GlassSelectProps {
   id: string;
-  name: string;
-  category: string[];
-  movement_pattern: string;
-  mechanics: string;
-  muscle_groups: string[];
+  label: string;
+  options: SelectOption[];
+  value: string;
+  onChange: (value: string) => void;
 }
 
-interface FilterOptions {
-  categories: string[];
-  muscleGroups: string[];
-  mechanics: string[];
-  movementPatterns: string[];
+function GlassSelect({ id, label, options, value, onChange }: GlassSelectProps) {
+  return (
+    <div>
+      <label htmlFor={id} className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+        {label}
+      </label>
+      <div className="relative">
+        <select
+          id={id}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          className="glass-strong w-full appearance-none rounded-2xl py-3 pr-10 pl-4 capitalize text-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 dark:text-zinc-50 [&>option]:bg-white dark:[&>option]:bg-zinc-900"
+        >
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <svg
+          viewBox="0 0 20 20"
+          aria-hidden="true"
+          className="pointer-events-none absolute top-1/2 right-3.5 size-4 -translate-y-1/2 fill-none stroke-zinc-600 stroke-2 dark:stroke-zinc-300"
+        >
+          <path d="m5 8 5 5 5-5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+    </div>
+  );
 }
 
-export default function ExerciseSearch() {
-  const [query, setQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedMuscleGroup, setSelectedMuscleGroup] = useState('');
-  const [selectedMechanics, setSelectedMechanics] = useState('');
-  const [exercises, setExercises] = useState<Exercise[]>([]);
-  const [filterOptions, setFilterOptions] = useState<FilterOptions | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [resultsCount, setResultsCount] = useState(0);
+function filterSelectOptions(allLabel: string, values: string[]): SelectOption[] {
+  return [{ value: '', label: allLabel }, ...values.map((value) => ({ value, label: value }))];
+}
 
-  // Load filter options on mount
-  useEffect(() => {
-    fetch('/api/exercises?filters=true')
-      .then(res => res.json())
-      .then(data => setFilterOptions(data))
-      .catch(err => console.error('Failed to load filters:', err));
-  }, []);
+interface ExerciseListState {
+  filters: ExerciseFilters;
+  view: ExerciseListView;
+}
 
-  // Debounced search — runs on every filter change, including initial load (all filters empty = all exercises)
-  const searchExercises = useCallback(() => {
-    setLoading(true);
+function listStateFromSearch(
+  search: string,
+  options: ExerciseFilterOptions,
+  fallbackView: ExerciseListView,
+): ExerciseListState {
+  const params = new URLSearchParams(search);
+  return { filters: parseExerciseFilters(params, options), view: parseExerciseListView(params, fallbackView) };
+}
 
-    const params = new URLSearchParams();
-    if (query) params.append('q', query);
-    if (selectedCategory) params.append('category', selectedCategory);
-    if (selectedMuscleGroup) params.append('muscleGroup', selectedMuscleGroup);
-    if (selectedMechanics) params.append('mechanics', selectedMechanics);
+function listStateToSearch({ filters, view }: ExerciseListState): string {
+  return exerciseListViewToSearchParams(view, exerciseFiltersToSearchParams(filters)).toString();
+}
 
-    fetch(`/api/exercises?${params.toString()}`)
-      .then(res => res.json())
-      .then(data => {
-        setExercises(data.exercises);
-        setResultsCount(data.count);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Search failed:', err);
-        setLoading(false);
-      });
-  }, [query, selectedCategory, selectedMuscleGroup, selectedMechanics]);
+// Links to /exercises (badges, nav, matrix) set the filters but keep the current view unless they name one.
+function useUrlSyncedListState(options: ExerciseFilterOptions) {
+  const urlSearch = useSearchParams().toString();
+  const [state, setState] = useState(() => listStateFromSearch(urlSearch, options, DEFAULT_EXERCISE_LIST_VIEW));
+  const [seenUrlSearch, setSeenUrlSearch] = useState(urlSearch);
+  const [writtenUrlSearch, setWrittenUrlSearch] = useState(urlSearch);
+
+  if (urlSearch !== seenUrlSearch) {
+    setSeenUrlSearch(urlSearch);
+    if (urlSearch !== writtenUrlSearch) {
+      setState(listStateFromSearch(urlSearch, options, state.view));
+    }
+  }
+
+  const stateSearch = listStateToSearch(state);
 
   useEffect(() => {
+    if (stateSearch === writtenUrlSearch) return;
     const timer = setTimeout(() => {
-      searchExercises();
-    }, 300);
-
+      setWrittenUrlSearch(stateSearch);
+      window.history.replaceState(null, '', stateSearch ? `?${stateSearch}` : window.location.pathname);
+    }, URL_SYNC_DELAY_MS);
     return () => clearTimeout(timer);
-  }, [searchExercises]);
+  }, [stateSearch, writtenUrlSearch]);
 
-  const clearFilters = () => {
-    setQuery('');
-    setSelectedCategory('');
-    setSelectedMuscleGroup('');
-    setSelectedMechanics('');
+  return [state, setState] as const;
+}
+
+export default function ExerciseSearch({ exercises, filterOptions }: ExerciseSearchProps) {
+  const [{ filters, view }, setState] = useUrlSyncedListState(filterOptions);
+  const results = sortExercises(
+    exercises.filter((exercise) => matchesExerciseFilters(exercise, filters)),
+    view.sortBy,
+  );
+  const hasActiveFilters = hasActiveExerciseFilters(filters);
+
+  const updateFilter = (name: keyof ExerciseFilters, value: string) => {
+    setState((current) => ({ ...current, filters: { ...current.filters, [name]: value } }));
   };
 
-  const hasActiveFilters = query || selectedCategory || selectedMuscleGroup || selectedMechanics;
+  const updateView = (change: Partial<ExerciseListView>) => {
+    setState((current) => ({ ...current, view: { ...current.view, ...change } }));
+  };
+
+  const clearFilters = () => setState((current) => ({ ...current, filters: EMPTY_EXERCISE_FILTERS }));
 
   return (
     <div className="w-full">
-      {/* Search & Filters */}
-      <div className="bg-white dark:bg-zinc-800 rounded-lg shadow-sm p-6 mb-6">
-        {/* Search Input */}
+      <search className="glass mb-6 block rounded-3xl p-5 sm:p-6">
         <div className="mb-4">
-          <label htmlFor="search" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+          <label htmlFor="search" className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
             Search by name, muscle group, or movement pattern
           </label>
           <input
             id="search"
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="e.g., deadlift, biceps, squat..."
-            className="w-full px-4 py-3 border border-zinc-300 dark:border-zinc-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-zinc-700 dark:text-zinc-50 transition"
+            type="search"
+            value={filters.query}
+            maxLength={MAX_QUERY_LENGTH}
+            onChange={(event) => updateFilter('query', event.target.value)}
+            placeholder="e.g. deadlift, biceps, squat…"
+            className="glass-strong w-full appearance-none rounded-2xl px-4 py-3 text-zinc-900 placeholder:text-zinc-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 dark:text-zinc-50 dark:placeholder:text-zinc-400"
           />
         </div>
 
-        {/* Filters */}
-        {filterOptions && (
-          <div className="grid gap-4 md:grid-cols-3 mb-4">
-            {/* Category Filter */}
-            <div>
-              <label htmlFor="category" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-                Category
-              </label>
-              <select
-                id="category"
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-zinc-700 dark:text-zinc-50 capitalize"
-              >
-                <option value="">All Categories</option>
-                {filterOptions.categories.map(cat => (
-                  <option key={cat} value={cat} className="capitalize">
-                    {cat}
-                  </option>
-                ))}
-              </select>
-            </div>
+        <div className="mb-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <GlassSelect
+            id="category"
+            label="Category"
+            options={filterSelectOptions('All categories', filterOptions.categories)}
+            value={filters.category}
+            onChange={(value) => updateFilter('category', value)}
+          />
+          <GlassSelect
+            id="muscleGroup"
+            label="Muscle group"
+            options={filterSelectOptions('All muscle groups', filterOptions.muscleGroups)}
+            value={filters.muscleGroup}
+            onChange={(value) => updateFilter('muscleGroup', value)}
+          />
+          <GlassSelect
+            id="movementPattern"
+            label="Movement pattern"
+            options={filterSelectOptions('All patterns', filterOptions.movementPatterns)}
+            value={filters.movementPattern}
+            onChange={(value) => updateFilter('movementPattern', value)}
+          />
+          <GlassSelect
+            id="mechanics"
+            label="Mechanics"
+            options={filterSelectOptions('All types', filterOptions.mechanics)}
+            value={filters.mechanics}
+            onChange={(value) => updateFilter('mechanics', value)}
+          />
+        </div>
 
-            {/* Muscle Group Filter */}
-            <div>
-              <label htmlFor="muscleGroup" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-                Muscle Group
-              </label>
-              <select
-                id="muscleGroup"
-                value={selectedMuscleGroup}
-                onChange={(e) => setSelectedMuscleGroup(e.target.value)}
-                className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-zinc-700 dark:text-zinc-50 capitalize"
-              >
-                <option value="">All Muscle Groups</option>
-                {filterOptions.muscleGroups.map(mg => (
-                  <option key={mg} value={mg} className="capitalize">
-                    {mg}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Mechanics Filter */}
-            <div>
-              <label htmlFor="mechanics" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-                Mechanics
-              </label>
-              <select
-                id="mechanics"
-                value={selectedMechanics}
-                onChange={(e) => setSelectedMechanics(e.target.value)}
-                className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-zinc-700 dark:text-zinc-50 capitalize"
-              >
-                <option value="">All Types</option>
-                {filterOptions.mechanics.map(mech => (
-                  <option key={mech} value={mech} className="capitalize">
-                    {mech}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        )}
-
-        {/* Results count + clear */}
-        <div className="flex justify-between items-center">
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            {loading ? 'Searching…' : `${resultsCount} exercise${resultsCount !== 1 ? 's' : ''}`}
-          </p>
+        <div className="flex min-h-10 items-center justify-between gap-4">
+          <output className="text-sm text-zinc-700 dark:text-zinc-300">
+            {results.length} exercise{results.length !== 1 ? 's' : ''}
+          </output>
           {hasActiveFilters && (
             <button
+              type="button"
               onClick={clearFilters}
-              className="px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition"
+              className="rounded-full px-4 py-2 text-sm font-medium text-sky-700 transition hover:bg-white/50 focus-visible:outline-2 focus-visible:outline-sky-500 dark:text-sky-300 dark:hover:bg-white/10"
             >
               Clear all filters
             </button>
           )}
         </div>
+      </search>
+
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+        <fieldset className="glass inline-flex rounded-full p-1">
+          <legend className="sr-only">Layout</legend>
+          {LAYOUT_OPTIONS.map((option) => {
+            const active = view.layout === option.value;
+            return (
+              <button
+                key={option.value}
+                type="button"
+                aria-pressed={active}
+                onClick={() => updateView({ layout: option.value })}
+                className={`min-h-10 rounded-full px-5 text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-sky-600 ${
+                  active
+                    ? 'glass-strong text-zinc-900 dark:text-zinc-50'
+                    : 'text-zinc-700 hover:bg-white/50 dark:text-zinc-300 dark:hover:bg-white/10'
+                }`}
+              >
+                {option.label}
+              </button>
+            );
+          })}
+        </fieldset>
+        <div className="w-full sm:w-60">
+          <GlassSelect
+            id="groupBy"
+            label="Group by"
+            options={GROUPING_OPTIONS}
+            value={view.groupBy}
+            onChange={(value) => updateView({ groupBy: parseExerciseGrouping(value, view.groupBy) })}
+          />
+        </div>
       </div>
 
-      {/* Loading State */}
-      {loading && (
-        <div className="text-center py-8">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-500 border-r-transparent"></div>
-          <p className="mt-4 text-zinc-600 dark:text-zinc-400">Loading exercises...</p>
-        </div>
-      )}
-
-      {/* Results Grid */}
-      {!loading && exercises.length > 0 && (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {exercises.map(exercise => (
-            <Link
-              key={exercise.id}
-              href={`/exercises/${exercise.id}`}
-              className="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-5 hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
-            >
-              <h3 className="font-bold text-lg mb-3 text-zinc-900 dark:text-zinc-50">
-                {exercise.name}
-              </h3>
-              <div className="space-y-2 text-sm">
-                <div>
-                  <span className="font-semibold text-zinc-700 dark:text-zinc-300">Type: </span>
-                  <span className="text-zinc-600 dark:text-zinc-400 capitalize">
-                    {exercise.mechanics}
-                  </span>
-                </div>
-                <div>
-                  <span className="font-semibold text-zinc-700 dark:text-zinc-300">Pattern: </span>
-                  <span className="text-zinc-600 dark:text-zinc-400 capitalize">
-                    {exercise.movement_pattern}
-                  </span>
-                </div>
-                <div>
-                  <span className="font-semibold text-zinc-700 dark:text-zinc-300">Category: </span>
-                  <span className="text-zinc-600 dark:text-zinc-400 capitalize">
-                    {exercise.category.join(', ')}
-                  </span>
-                </div>
-                <div>
-                  <span className="font-semibold text-zinc-700 dark:text-zinc-300">Muscles: </span>
-                  <div className="flex gap-1 flex-wrap mt-1">
-                    {exercise.muscle_groups.map(muscle => (
-                      <MuscleBadge key={muscle} muscle={muscle} size="sm" />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
-
-      {/* No Results */}
-      {!loading && hasActiveFilters && exercises.length === 0 && (
-        <div className="text-center py-12 bg-white dark:bg-zinc-800 rounded-lg">
-          <p className="text-lg text-zinc-600 dark:text-zinc-400 mb-2">
-            No exercises found
-          </p>
-          <p className="text-sm text-zinc-500 dark:text-zinc-500 mb-4">
-            Try adjusting your filters or search query
-          </p>
+      {results.length > 0 ? (
+        <ExerciseResults exercises={results} view={view} onSort={(sortBy) => updateView({ sortBy })} />
+      ) : (
+        <div className="glass rounded-3xl px-6 py-12 text-center">
+          <p className="mb-2 text-lg font-medium text-zinc-900 dark:text-zinc-50">No exercises found</p>
+          <p className="mb-6 text-sm text-zinc-700 dark:text-zinc-300">Try adjusting your filters or search query.</p>
           <button
+            type="button"
             onClick={clearFilters}
-            className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition"
+            className="rounded-full bg-sky-700 px-6 py-2.5 font-medium text-white shadow-lg shadow-sky-700/30 transition hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
           >
             Clear filters
           </button>
