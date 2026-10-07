@@ -877,6 +877,42 @@
         "1",
         "1",
         ["abs"]
+      ],
+      [
+        "75",
+        "Waiter Curl",
+        ["upper"],
+        "pull",
+        "isolation",
+        "1791404437802",
+        "1791404437802",
+        "NULL",
+        "NULL",
+        ["biceps"]
+      ],
+      [
+        "76",
+        "Leg Raise",
+        ["core"],
+        "flex",
+        "isolation",
+        "1791404437802",
+        "1791404437802",
+        "NULL",
+        "NULL",
+        ["abs"]
+      ],
+      [
+        "77",
+        "Good Morning",
+        ["lower"],
+        "bend",
+        "compound",
+        "1791404437802",
+        "1791404437802",
+        "NULL",
+        "NULL",
+        ["hamstrings", "glutes", "lower back"]
       ]
     ]
   }
