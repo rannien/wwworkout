@@ -15,7 +15,7 @@ export default function Home() {
   const stats = getExerciseStats();
   const muscleGroupStats = getMuscleGroupStats();
   const movementIndex = getUniqueMovementPatterns()
-    .map(pattern => ({
+    .map((pattern) => ({
       pattern,
       exercises: filterByMovementPattern(pattern).toSorted((a, b) => a.name.localeCompare(b.name)),
     }))
@@ -23,19 +23,26 @@ export default function Home() {
 
   return (
     <div className="flex flex-col gap-20">
-      <section aria-labelledby="hero-title" className="grid items-center gap-10 pt-4 lg:grid-cols-[1fr_1.05fr] lg:pt-10">
+      <section
+        aria-labelledby="hero-title"
+        className="grid items-center gap-10 pt-4 lg:grid-cols-[1fr_1.05fr] lg:pt-10"
+      >
         <div>
           <p className="mb-5 font-mono text-xs tracking-widest text-zinc-700 uppercase dark:text-zinc-300">
-            {exercises.length} exercises · {muscleGroupStats.length} muscle groups · {movementIndex.length} movement patterns
+            {exercises.length} exercises · {muscleGroupStats.length} muscle groups · {movementIndex.length} movement
+            patterns
           </p>
-          <h1 id="hero-title" className="mb-6 text-5xl leading-[0.95] font-bold tracking-tighter text-zinc-900 sm:text-7xl dark:text-zinc-50">
+          <h1
+            id="hero-title"
+            className="mb-6 text-5xl leading-[0.95] font-bold tracking-tighter text-zinc-900 sm:text-7xl dark:text-zinc-50"
+          >
             Pick a muscle.
             <br />
             <span className="text-zinc-500 dark:text-zinc-400">Get every exercise that hits it.</span>
           </h1>
           <p className="mb-8 max-w-md text-lg text-pretty text-zinc-700 dark:text-zinc-300">
-            From Deadlifts to Concentration Curls — each exercise is tagged with the muscles it works, how it
-            moves, and whether it&apos;s a compound or isolation lift.
+            From Deadlifts to Concentration Curls — each exercise is tagged with the muscles it works, how it moves, and
+            whether it&apos;s a compound or isolation lift.
           </p>
           <div className="flex flex-wrap items-center gap-3">
             <Link
@@ -58,7 +65,9 @@ export default function Home() {
           <h2 id="muscle-map" className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
             The map
           </h2>
-          <p className="text-zinc-700 dark:text-zinc-300">Every exercise by muscle and movement. Empty cells are gaps.</p>
+          <p className="text-zinc-700 dark:text-zinc-300">
+            Every exercise by muscle and movement. Empty cells are gaps.
+          </p>
         </div>
         <MuscleMatrix
           muscleGroups={muscleGroupStats.map(({ muscleGroup }) => muscleGroup)}
@@ -71,7 +80,9 @@ export default function Home() {
           <h2 id="movement-index" className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
             The index
           </h2>
-          <p className="text-zinc-700 dark:text-zinc-300">All {exercises.length} exercises, grouped by how they move.</p>
+          <p className="text-zinc-700 dark:text-zinc-300">
+            All {exercises.length} exercises, grouped by how they move.
+          </p>
         </div>
         <div className="glass divide-y divide-zinc-900/10 rounded-4xl px-5 sm:px-8 dark:divide-white/10">
           {movementIndex.map(({ pattern, exercises: patternExercises }) => (
@@ -81,7 +92,9 @@ export default function Home() {
               className="grid gap-3 py-6 sm:grid-cols-[10rem_1fr] sm:gap-8"
             >
               <h3 id={`pattern-${pattern}`} className="flex items-baseline gap-3">
-                <span className="text-3xl font-semibold tracking-tight text-zinc-900 capitalize dark:text-zinc-50">{pattern}</span>
+                <span className="text-3xl font-semibold tracking-tight text-zinc-900 capitalize dark:text-zinc-50">
+                  {pattern}
+                </span>
                 <span className="font-mono text-sm text-zinc-600 tabular-nums dark:text-zinc-400">
                   {patternExercises.length}
                   <span className="sr-only"> exercises</span>
@@ -97,7 +110,9 @@ export default function Home() {
                       {exercise.name}
                     </Link>
                     {index < patternExercises.length - 1 && (
-                      <span aria-hidden="true" className="text-zinc-400 dark:text-zinc-600">/</span>
+                      <span aria-hidden="true" className="text-zinc-400 dark:text-zinc-600">
+                        /
+                      </span>
                     )}
                   </li>
                 ))}

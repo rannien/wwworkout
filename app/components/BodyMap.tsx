@@ -132,7 +132,7 @@ export default function BodyMap({ muscleGroups }: BodyMapProps) {
 
   const renderLegend = (label: string, muscles: Record<string, React.ReactNode>) => (
     <ul aria-label={label} className="flex flex-col">
-      {Object.keys(muscles).map(muscle => (
+      {Object.keys(muscles).map((muscle) => (
         <li key={muscle}>
           <Link
             href={exerciseListHref({ muscleGroup: muscle })}
@@ -160,14 +160,20 @@ export default function BodyMap({ muscleGroups }: BodyMapProps) {
 
   return (
     <div className="glass rounded-4xl p-4 sm:p-6">
-      <p aria-hidden="true" className="mb-2 h-5 text-center font-mono text-xs tracking-widest text-zinc-700 uppercase dark:text-zinc-300">
+      <p
+        aria-hidden="true"
+        className="mb-2 h-5 text-center font-mono text-xs tracking-widest text-zinc-700 uppercase dark:text-zinc-300"
+      >
         {activeMuscle ? `${activeMuscle} · ${activeCount ?? 0} exercises` : 'Tap a muscle'}
       </p>
       <div className="grid grid-cols-2 gap-2">
         {renderFigure('Front', FRONT_MUSCLES)}
         {renderFigure('Back', BACK_MUSCLES)}
       </div>
-      <nav aria-label="Muscle groups" className="mt-5 grid grid-cols-2 gap-x-2 border-t border-zinc-900/10 pt-4 sm:gap-x-4 dark:border-white/10">
+      <nav
+        aria-label="Muscle groups"
+        className="mt-5 grid grid-cols-2 gap-x-2 border-t border-zinc-900/10 pt-4 sm:gap-x-4 dark:border-white/10"
+      >
         {renderLegend('Front muscles', FRONT_MUSCLES)}
         {renderLegend('Back muscles', BACK_MUSCLES)}
       </nav>

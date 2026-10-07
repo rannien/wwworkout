@@ -145,7 +145,12 @@ describe('parseExerciseFilters', () => {
   });
 
   it('uses the first value of a repeated param', () => {
-    const params = new URLSearchParams([['q', 'first'], ['q', 'second'], ['muscleGroup', 'biceps'], ['muscleGroup', 'lower back']]);
+    const params = new URLSearchParams([
+      ['q', 'first'],
+      ['q', 'second'],
+      ['muscleGroup', 'biceps'],
+      ['muscleGroup', 'lower back'],
+    ]);
 
     const filters = parseExerciseFilters(params, options);
 
@@ -202,7 +207,10 @@ describe('exerciseFiltersToSearchParams', () => {
 
     const params = exerciseFiltersToSearchParams(filters);
 
-    assert.equal(params.toString(), 'q=curl&category=strength&muscleGroup=biceps&mechanics=isolation&movementPattern=pull');
+    assert.equal(
+      params.toString(),
+      'q=curl&category=strength&muscleGroup=biceps&mechanics=isolation&movementPattern=pull',
+    );
   });
 
   it('writes the movement pattern under the movementPattern key', () => {

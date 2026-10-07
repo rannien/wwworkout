@@ -10,14 +10,19 @@ import {
   type ListableExercise,
 } from './exerciseList.ts';
 
-function exercise(name: string, movement_pattern: string, mechanics: string, muscle_groups: string[]): ListableExercise {
+function exercise(
+  name: string,
+  movement_pattern: string,
+  mechanics: string,
+  muscle_groups: string[],
+): ListableExercise {
   return { name, movement_pattern, mechanics, muscle_groups };
 }
 
 const tableByMuscleGroup: ExerciseListView = { layout: 'table', groupBy: 'muscleGroup', sortBy: 'mechanics' };
 
 function names(exercises: ListableExercise[]): string[] {
-  return exercises.map(item => item.name);
+  return exercises.map((item) => item.name);
 }
 
 describe('parseExerciseListView', () => {
@@ -174,13 +179,16 @@ describe('groupExercises', () => {
   it('orders equally sized groups by key ascending', () => {
     const groups = groupExercises([squat, bench], 'movementPattern');
 
-    assert.deepEqual(groups.map(group => group.key), ['Push', 'Squat']);
+    assert.deepEqual(
+      groups.map((group) => group.key),
+      ['Push', 'Squat'],
+    );
   });
 
   it('preserves the input order within a group', () => {
     const groups = groupExercises([row, curl], 'muscleGroup');
 
-    const biceps = groups.find(group => group.key === 'Biceps');
+    const biceps = groups.find((group) => group.key === 'Biceps');
     assert.deepEqual(biceps?.exercises, [row, curl]);
   });
 });

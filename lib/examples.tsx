@@ -1,8 +1,8 @@
 // Example Usage of Exercise Database
 // This file demonstrates various ways to use the exercise database in your components
 
-import { 
-  getAllExercises, 
+import {
+  getAllExercises,
   getExerciseById,
   searchExercises,
   filterByCategory,
@@ -12,7 +12,7 @@ import {
   filterExercises,
   getUniqueCategories,
   getUniqueMuscleGroups,
-  getExerciseStats
+  getExerciseStats,
 } from './exerciseDb';
 
 // ============================================================================
@@ -21,12 +21,12 @@ import {
 
 export function ExampleGetAll() {
   const exercises = getAllExercises();
-  
+
   return (
     <div>
       <h2>All Exercises ({exercises.length})</h2>
       <ul>
-        {exercises.map(ex => (
+        {exercises.map((ex) => (
           <li key={ex.id}>{ex.name}</li>
         ))}
       </ul>
@@ -40,11 +40,11 @@ export function ExampleGetAll() {
 
 export function ExampleGetById({ exerciseId }: { exerciseId: string }) {
   const exercise = getExerciseById(exerciseId);
-  
+
   if (!exercise) {
     return <div>Exercise not found</div>;
   }
-  
+
   return (
     <div>
       <h2>{exercise.name}</h2>
@@ -62,11 +62,11 @@ export function ExampleGetById({ exerciseId }: { exerciseId: string }) {
 
 export function ExampleSearch() {
   const results = searchExercises('squat');
-  
+
   return (
     <div>
       <h2>Search Results for &quot;squat&quot;</h2>
-      {results.map(ex => (
+      {results.map((ex) => (
         <div key={ex.id}>{ex.name}</div>
       ))}
     </div>
@@ -80,19 +80,19 @@ export function ExampleSearch() {
 export function ExampleFilterByCategory() {
   const lowerBodyExercises = filterByCategory('lower');
   const upperBodyExercises = filterByCategory('upper');
-  
+
   return (
     <div>
       <section>
         <h3>Lower Body ({lowerBodyExercises.length})</h3>
-        {lowerBodyExercises.map(ex => (
+        {lowerBodyExercises.map((ex) => (
           <div key={ex.id}>{ex.name}</div>
         ))}
       </section>
-      
+
       <section>
         <h3>Upper Body ({upperBodyExercises.length})</h3>
-        {upperBodyExercises.map(ex => (
+        {upperBodyExercises.map((ex) => (
           <div key={ex.id}>{ex.name}</div>
         ))}
       </section>
@@ -107,18 +107,18 @@ export function ExampleFilterByCategory() {
 export function ExampleFilterByMuscleGroup() {
   const chestExercises = filterByMuscleGroup('chest');
   const bicepsExercises = filterByMuscleGroup('biceps');
-  
+
   return (
     <div>
       <h3>Chest Exercises ({chestExercises.length})</h3>
-      {chestExercises.map(ex => (
+      {chestExercises.map((ex) => (
         <div key={ex.id}>
           {ex.name} - {ex.mechanics}
         </div>
       ))}
-      
+
       <h3>Biceps Exercises ({bicepsExercises.length})</h3>
-      {bicepsExercises.map(ex => (
+      {bicepsExercises.map((ex) => (
         <div key={ex.id}>
           {ex.name} - {ex.movement_pattern}
         </div>
@@ -134,23 +134,23 @@ export function ExampleFilterByMuscleGroup() {
 export function ExampleFilterByMechanics() {
   const compoundExercises = filterByMechanics('compound');
   const isolationExercises = filterByMechanics('isolation');
-  
+
   return (
     <div>
       <section>
         <h3>Compound Exercises ({compoundExercises.length})</h3>
         <p>Great for building overall strength and mass</p>
-        {compoundExercises.slice(0, 5).map(ex => (
+        {compoundExercises.slice(0, 5).map((ex) => (
           <div key={ex.id}>
             {ex.name} - targets: {ex.muscle_groups.join(', ')}
           </div>
         ))}
       </section>
-      
+
       <section>
         <h3>Isolation Exercises ({isolationExercises.length})</h3>
         <p>Perfect for targeting specific muscles</p>
-        {isolationExercises.slice(0, 5).map(ex => (
+        {isolationExercises.slice(0, 5).map((ex) => (
           <div key={ex.id}>
             {ex.name} - targets: {ex.muscle_groups.join(', ')}
           </div>
@@ -168,21 +168,21 @@ export function ExampleFilterByMovementPattern() {
   const squatPatterns = filterByMovementPattern('squat');
   const pushPatterns = filterByMovementPattern('push');
   const pullPatterns = filterByMovementPattern('pull');
-  
+
   return (
     <div>
       <h3>Squat Pattern ({squatPatterns.length})</h3>
-      {squatPatterns.map(ex => (
+      {squatPatterns.map((ex) => (
         <div key={ex.id}>{ex.name}</div>
       ))}
-      
+
       <h3>Push Pattern ({pushPatterns.length})</h3>
-      {pushPatterns.map(ex => (
+      {pushPatterns.map((ex) => (
         <div key={ex.id}>{ex.name}</div>
       ))}
-      
+
       <h3>Pull Pattern ({pullPatterns.length})</h3>
-      {pullPatterns.map(ex => (
+      {pullPatterns.map((ex) => (
         <div key={ex.id}>{ex.name}</div>
       ))}
     </div>
@@ -198,31 +198,31 @@ export function ExampleAdvancedFilter() {
   const legDayExercises = filterExercises({
     category: 'lower',
     mechanics: 'compound',
-    muscleGroup: 'glutes'
+    muscleGroup: 'glutes',
   });
-  
+
   // Find upper body pull exercises
   const backDay = filterExercises({
     category: 'upper',
-    movementPattern: 'pull'
+    movementPattern: 'pull',
   });
-  
+
   return (
     <div>
       <section>
         <h3>Leg Day Exercises</h3>
         <p>Compound lower body exercises targeting glutes</p>
-        {legDayExercises.map(ex => (
+        {legDayExercises.map((ex) => (
           <div key={ex.id}>
             {ex.name} - {ex.muscle_groups.join(', ')}
           </div>
         ))}
       </section>
-      
+
       <section>
         <h3>Back Day Exercises</h3>
         <p>Upper body pulling movements</p>
-        {backDay.map(ex => (
+        {backDay.map((ex) => (
           <div key={ex.id}>
             {ex.name} - {ex.muscle_groups.join(', ')}
           </div>
@@ -239,19 +239,19 @@ export function ExampleAdvancedFilter() {
 export function ExampleFilterOptions() {
   const categories = getUniqueCategories();
   const muscleGroups = getUniqueMuscleGroups();
-  
+
   return (
     <div>
       <h3>Available Categories</h3>
       <ul>
-        {categories.map(cat => (
+        {categories.map((cat) => (
           <li key={cat}>{cat}</li>
         ))}
       </ul>
-      
+
       <h3>Available Muscle Groups</h3>
       <ul>
-        {muscleGroups.map(mg => (
+        {muscleGroups.map((mg) => (
           <li key={mg}>{mg}</li>
         ))}
       </ul>
@@ -265,28 +265,28 @@ export function ExampleFilterOptions() {
 
 export function ExampleStats() {
   const stats = getExerciseStats();
-  
+
   return (
     <div>
       <h2>Exercise Database Statistics</h2>
       <p>Total Exercises: {stats.total}</p>
-      
+
       <h3>By Category</h3>
-      {stats.byCategory.map(item => (
+      {stats.byCategory.map((item) => (
         <div key={item.category}>
           {item.category}: {item.count} exercises
         </div>
       ))}
-      
+
       <h3>By Mechanics</h3>
-      {stats.byMechanics.map(item => (
+      {stats.byMechanics.map((item) => (
         <div key={item.mechanics}>
           {item.mechanics}: {item.count} exercises
         </div>
       ))}
-      
+
       <h3>By Movement Pattern</h3>
-      {stats.byMovementPattern.map(item => (
+      {stats.byMovementPattern.map((item) => (
         <div key={item.pattern}>
           {item.pattern}: {item.count} exercises
         </div>
@@ -301,29 +301,29 @@ export function ExampleStats() {
 
 export function ExampleWorkoutBuilder() {
   // PPL Split Example (Push, Pull, Legs)
-  
+
   const pushDay = filterExercises({
     category: 'upper',
-    movementPattern: 'push'
+    movementPattern: 'push',
   }).slice(0, 5);
-  
+
   const pullDay = filterExercises({
     category: 'upper',
-    movementPattern: 'pull'
+    movementPattern: 'pull',
   }).slice(0, 5);
-  
+
   const legDay = filterExercises({
-    category: 'lower'
+    category: 'lower',
   }).slice(0, 5);
-  
+
   return (
     <div>
       <h2>PPL Workout Split</h2>
-      
+
       <section>
         <h3>Push Day</h3>
         <ol>
-          {pushDay.map(ex => (
+          {pushDay.map((ex) => (
             <li key={ex.id}>
               {ex.name} - 3x8-12 reps
               <br />
@@ -332,11 +332,11 @@ export function ExampleWorkoutBuilder() {
           ))}
         </ol>
       </section>
-      
+
       <section>
         <h3>Pull Day</h3>
         <ol>
-          {pullDay.map(ex => (
+          {pullDay.map((ex) => (
             <li key={ex.id}>
               {ex.name} - 3x8-12 reps
               <br />
@@ -345,11 +345,11 @@ export function ExampleWorkoutBuilder() {
           ))}
         </ol>
       </section>
-      
+
       <section>
         <h3>Leg Day</h3>
         <ol>
-          {legDay.map(ex => (
+          {legDay.map((ex) => (
             <li key={ex.id}>
               {ex.name} - 3x8-12 reps
               <br />
@@ -368,28 +368,29 @@ export function ExampleWorkoutBuilder() {
 
 export function ExampleExerciseSubstitutions({ exerciseId }: { exerciseId: string }) {
   const exercise = getExerciseById(exerciseId);
-  
+
   if (!exercise) {
     return <div>Exercise not found</div>;
   }
-  
+
   // Find similar exercises based on same muscle groups and movement pattern
-  const substitutions = getAllExercises().filter(ex => 
-    ex.id !== exercise.id &&
-    ex.movement_pattern === exercise.movement_pattern &&
-    ex.muscle_groups.some(mg => exercise.muscle_groups.includes(mg))
+  const substitutions = getAllExercises().filter(
+    (ex) =>
+      ex.id !== exercise.id &&
+      ex.movement_pattern === exercise.movement_pattern &&
+      ex.muscle_groups.some((mg) => exercise.muscle_groups.includes(mg)),
   );
-  
+
   return (
     <div>
       <h3>Current Exercise: {exercise.name}</h3>
       <p>Muscles: {exercise.muscle_groups.join(', ')}</p>
       <p>Pattern: {exercise.movement_pattern}</p>
-      
+
       <h4>Similar Exercises You Can Try:</h4>
       {substitutions.length > 0 ? (
         <ul>
-          {substitutions.map(sub => (
+          {substitutions.map((sub) => (
             <li key={sub.id}>
               {sub.name} ({sub.mechanics})
               <br />

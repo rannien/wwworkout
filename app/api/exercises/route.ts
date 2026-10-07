@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { 
+import {
   filterExercises,
   getAllExercises,
   getUniqueCategories,
   getUniqueMuscleGroups,
   getUniqueMechanics,
   getUniqueMovementPatterns,
-  getExerciseStats
+  getExerciseStats,
 } from '@/lib/exerciseDb';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  
+
   const query = searchParams.get('q');
   const category = searchParams.get('category');
   const muscleGroup = searchParams.get('muscleGroup');
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
       categories: getUniqueCategories(),
       muscleGroups: getUniqueMuscleGroups(),
       mechanics: getUniqueMechanics(),
-      movementPatterns: getUniqueMovementPatterns()
+      movementPatterns: getUniqueMovementPatterns(),
     });
   }
 
@@ -42,18 +42,18 @@ export async function GET(request: NextRequest) {
     category: category || undefined,
     muscleGroup: muscleGroup || undefined,
     mechanics: mechanics || undefined,
-    movementPattern: pattern || undefined
+    movementPattern: pattern || undefined,
   });
 
-  return NextResponse.json({ 
-    exercises, 
+  return NextResponse.json({
+    exercises,
     count: exercises.length,
     filters: {
       query,
       category,
       muscleGroup,
       mechanics,
-      pattern
-    }
+      pattern,
+    },
   });
 }

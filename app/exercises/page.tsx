@@ -8,15 +8,10 @@ export default async function ExercisesPage() {
 
   return (
     <>
-      <Breadcrumb items={[
-        { label: 'Home', href: '/' },
-        { label: 'Exercises' },
-      ]} />
+      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Exercises' }]} />
 
       <div className="mb-8">
-        <h1 className="mb-2 text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-          Exercise Database
-        </h1>
+        <h1 className="mb-2 text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">Exercise Database</h1>
         <p className="text-zinc-700 dark:text-zinc-300">
           Find exercises by name, muscle group, category, or mechanics — or tap any badge to filter.
         </p>

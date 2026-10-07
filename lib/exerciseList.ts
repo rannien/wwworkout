@@ -28,7 +28,7 @@ const GROUPINGS: readonly ExerciseGrouping[] = ['none', 'movementPattern', 'musc
 const SORTS: readonly ExerciseSort[] = ['name', 'movementPattern', 'mechanics'];
 
 function pick<T extends string>(value: string | null, allowed: readonly T[], fallback: T): T {
-  return allowed.find(option => option === value) ?? fallback;
+  return allowed.find((option) => option === value) ?? fallback;
 }
 
 export function parseExerciseGrouping(value: string | null, fallback: ExerciseGrouping): ExerciseGrouping {
@@ -79,7 +79,10 @@ function groupKeys(exercise: ListableExercise, groupBy: ExerciseGrouping): strin
   }
 }
 
-export function groupExercises<T extends ListableExercise>(exercises: T[], groupBy: ExerciseGrouping): ExerciseGroup<T>[] {
+export function groupExercises<T extends ListableExercise>(
+  exercises: T[],
+  groupBy: ExerciseGrouping,
+): ExerciseGroup<T>[] {
   const groups = new Map<string, T[]>();
   for (const exercise of exercises) {
     for (const key of groupKeys(exercise, groupBy)) {

@@ -37,7 +37,7 @@ export default function SiteHeader() {
         </Link>
 
         <ul className="flex items-center gap-1">
-          {NAV_LINKS.map(link => {
+          {NAV_LINKS.map((link) => {
             const active = isActive(pathname, link.href);
             return (
               <li key={link.href}>

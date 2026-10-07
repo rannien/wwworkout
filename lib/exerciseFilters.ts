@@ -17,7 +17,10 @@ export interface ExerciseFilterOptions {
   movementPatterns: string[];
 }
 
-export type FilterableExercise = Pick<Exercise, 'name' | 'category' | 'movement_pattern' | 'mechanics' | 'muscle_groups'>;
+export type FilterableExercise = Pick<
+  Exercise,
+  'name' | 'category' | 'movement_pattern' | 'mechanics' | 'muscle_groups'
+>;
 
 export const EMPTY_EXERCISE_FILTERS: ExerciseFilters = {
   query: '',
@@ -34,7 +37,7 @@ export function matchesExerciseFilters(exercise: FilterableExercise, criteria: E
   if (query) {
     const matchesQuery =
       exercise.name.toLowerCase().includes(query) ||
-      exercise.muscle_groups.some(mg => mg.toLowerCase().includes(query)) ||
+      exercise.muscle_groups.some((mg) => mg.toLowerCase().includes(query)) ||
       exercise.movement_pattern.toLowerCase().includes(query);
     if (!matchesQuery) return false;
   }
@@ -45,7 +48,7 @@ export function matchesExerciseFilters(exercise: FilterableExercise, criteria: E
 
   if (criteria.muscleGroup) {
     const muscleGroup = criteria.muscleGroup.toLowerCase();
-    if (!exercise.muscle_groups.some(mg => mg.toLowerCase() === muscleGroup)) return false;
+    if (!exercise.muscle_groups.some((mg) => mg.toLowerCase() === muscleGroup)) return false;
   }
 
   if (criteria.mechanics && exercise.mechanics.toLowerCase() !== criteria.mechanics.toLowerCase()) {
@@ -61,7 +64,7 @@ export function matchesExerciseFilters(exercise: FilterableExercise, criteria: E
 
 function matchOption(value: string | null, options: string[]): string {
   const lowerValue = value?.toLowerCase();
-  return options.find(option => option.toLowerCase() === lowerValue) ?? '';
+  return options.find((option) => option.toLowerCase() === lowerValue) ?? '';
 }
 
 export function parseExerciseFilters(params: URLSearchParams, options: ExerciseFilterOptions): ExerciseFilters {
@@ -90,5 +93,7 @@ export function exerciseListHref(filters: Partial<ExerciseFilters> = {}): string
 }
 
 export function hasActiveExerciseFilters(filters: ExerciseFilters): boolean {
-  return Boolean(filters.query || filters.category || filters.muscleGroup || filters.mechanics || filters.movementPattern);
+  return Boolean(
+    filters.query || filters.category || filters.muscleGroup || filters.mechanics || filters.movementPattern,
+  );
 }

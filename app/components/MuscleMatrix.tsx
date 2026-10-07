@@ -16,7 +16,7 @@ const HEAT_LEVELS = [
 ];
 
 function heatClasses(count: number): string {
-  return HEAT_LEVELS.find(level => count >= level.min)?.classes ?? '';
+  return HEAT_LEVELS.find((level) => count >= level.min)?.classes ?? '';
 }
 
 const HEADER_LINK =
@@ -30,11 +30,18 @@ export default function MuscleMatrix({ muscleGroups, movementPatterns }: MuscleM
           <caption className="sr-only">Number of exercises for each muscle group and movement pattern</caption>
           <thead>
             <tr>
-              <th scope="col" className="px-2 pb-2 text-left font-mono text-xs font-medium tracking-widest text-zinc-600 uppercase dark:text-zinc-400">
+              <th
+                scope="col"
+                className="px-2 pb-2 text-left font-mono text-xs font-medium tracking-widest text-zinc-600 uppercase dark:text-zinc-400"
+              >
                 Muscle
               </th>
-              {movementPatterns.map(pattern => (
-                <th key={pattern} scope="col" className="px-2 pb-2 text-center font-semibold text-zinc-800 dark:text-zinc-200">
+              {movementPatterns.map((pattern) => (
+                <th
+                  key={pattern}
+                  scope="col"
+                  className="px-2 pb-2 text-center font-semibold text-zinc-800 dark:text-zinc-200"
+                >
                   <Link href={exerciseListHref({ movementPattern: pattern })} className={HEADER_LINK}>
                     {pattern}
                   </Link>
@@ -43,9 +50,12 @@ export default function MuscleMatrix({ muscleGroups, movementPatterns }: MuscleM
             </tr>
           </thead>
           <tbody>
-            {muscleGroups.map(muscleGroup => (
+            {muscleGroups.map((muscleGroup) => (
               <tr key={muscleGroup}>
-                <th scope="row" className="pr-3 text-left font-medium whitespace-nowrap text-zinc-800 dark:text-zinc-200">
+                <th
+                  scope="row"
+                  className="pr-3 text-left font-medium whitespace-nowrap text-zinc-800 dark:text-zinc-200"
+                >
                   <Link href={exerciseListHref({ muscleGroup })} className={`gap-2 ${HEADER_LINK}`}>
                     <svg viewBox="0 0 10 10" aria-hidden="true" className="size-2.5 shrink-0">
                       <circle cx="5" cy="5" r="5" className={muscleColor(muscleGroup).fill} />
@@ -53,7 +63,7 @@ export default function MuscleMatrix({ muscleGroups, movementPatterns }: MuscleM
                     {muscleGroup}
                   </Link>
                 </th>
-                {movementPatterns.map(pattern => {
+                {movementPatterns.map((pattern) => {
                   const count = filterExercises({ muscleGroup, movementPattern: pattern }).length;
                   return (
                     <td key={pattern} className="h-11 p-0 text-center">
@@ -63,10 +73,15 @@ export default function MuscleMatrix({ muscleGroups, movementPatterns }: MuscleM
                           className={`${heatClasses(count)} flex size-full min-h-11 items-center justify-center rounded-xl font-mono font-semibold tabular-nums transition hover:ring-2 hover:ring-zinc-900/30 focus-visible:outline-2 focus-visible:outline-sky-600 dark:hover:ring-white/40`}
                         >
                           {count}
-                          <span className="sr-only"> {pattern} exercises for {muscleGroup}</span>
+                          <span className="sr-only">
+                            {' '}
+                            {pattern} exercises for {muscleGroup}
+                          </span>
                         </Link>
                       ) : (
-                        <span aria-hidden="true" className="text-zinc-400 dark:text-zinc-600">·</span>
+                        <span aria-hidden="true" className="text-zinc-400 dark:text-zinc-600">
+                          ·
+                        </span>
                       )}
                     </td>
                   );
@@ -76,8 +91,11 @@ export default function MuscleMatrix({ muscleGroups, movementPatterns }: MuscleM
           </tbody>
         </table>
       </div>
-      <div aria-hidden="true" className="mt-4 flex flex-wrap items-center justify-end gap-2 font-mono text-xs text-zinc-600 dark:text-zinc-400">
-        {HEAT_LEVELS.toReversed().map(level => (
+      <div
+        aria-hidden="true"
+        className="mt-4 flex flex-wrap items-center justify-end gap-2 font-mono text-xs text-zinc-600 dark:text-zinc-400"
+      >
+        {HEAT_LEVELS.toReversed().map((level) => (
           <span key={level.label} className={`${level.classes} rounded-md px-2 py-0.5`}>
             {level.label}
           </span>

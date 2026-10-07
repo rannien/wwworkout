@@ -13,7 +13,11 @@ export default function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
           const isLast = index === items.length - 1;
           return (
             <li key={index} className="flex items-center gap-2">
-              {index > 0 && <span aria-hidden="true" className="text-zinc-500 dark:text-zinc-400">/</span>}
+              {index > 0 && (
+                <span aria-hidden="true" className="text-zinc-500 dark:text-zinc-400">
+                  /
+                </span>
+              )}
               {item.href && !isLast ? (
                 <Link
                   href={item.href}

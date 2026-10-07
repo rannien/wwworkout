@@ -66,11 +66,13 @@ function GlassSelect({ id, label, options, value, onChange }: GlassSelectProps) 
         <select
           id={id}
           value={value}
-          onChange={event => onChange(event.target.value)}
+          onChange={(event) => onChange(event.target.value)}
           className="glass-strong w-full appearance-none rounded-2xl py-3 pr-10 pl-4 capitalize text-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 dark:text-zinc-50 [&>option]:bg-white dark:[&>option]:bg-zinc-900"
         >
-          {options.map(option => (
-            <option key={option.value} value={option.value}>{option.label}</option>
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
           ))}
         </select>
         <svg
@@ -86,7 +88,7 @@ function GlassSelect({ id, label, options, value, onChange }: GlassSelectProps) 
 }
 
 function filterSelectOptions(allLabel: string, values: string[]): SelectOption[] {
-  return [{ value: '', label: allLabel }, ...values.map(value => ({ value, label: value }))];
+  return [{ value: '', label: allLabel }, ...values.map((value) => ({ value, label: value }))];
 }
 
 interface ExerciseListState {
@@ -94,7 +96,11 @@ interface ExerciseListState {
   view: ExerciseListView;
 }
 
-function listStateFromSearch(search: string, options: ExerciseFilterOptions, fallbackView: ExerciseListView): ExerciseListState {
+function listStateFromSearch(
+  search: string,
+  options: ExerciseFilterOptions,
+  fallbackView: ExerciseListView,
+): ExerciseListState {
   const params = new URLSearchParams(search);
   return { filters: parseExerciseFilters(params, options), view: parseExerciseListView(params, fallbackView) };
 }
@@ -134,20 +140,20 @@ function useUrlSyncedListState(options: ExerciseFilterOptions) {
 export default function ExerciseSearch({ exercises, filterOptions }: ExerciseSearchProps) {
   const [{ filters, view }, setState] = useUrlSyncedListState(filterOptions);
   const results = sortExercises(
-    exercises.filter(exercise => matchesExerciseFilters(exercise, filters)),
+    exercises.filter((exercise) => matchesExerciseFilters(exercise, filters)),
     view.sortBy,
   );
   const hasActiveFilters = hasActiveExerciseFilters(filters);
 
   const updateFilter = (name: keyof ExerciseFilters, value: string) => {
-    setState(current => ({ ...current, filters: { ...current.filters, [name]: value } }));
+    setState((current) => ({ ...current, filters: { ...current.filters, [name]: value } }));
   };
 
   const updateView = (change: Partial<ExerciseListView>) => {
-    setState(current => ({ ...current, view: { ...current.view, ...change } }));
+    setState((current) => ({ ...current, view: { ...current.view, ...change } }));
   };
 
-  const clearFilters = () => setState(current => ({ ...current, filters: EMPTY_EXERCISE_FILTERS }));
+  const clearFilters = () => setState((current) => ({ ...current, filters: EMPTY_EXERCISE_FILTERS }));
 
   return (
     <div className="w-full">
@@ -161,7 +167,7 @@ export default function ExerciseSearch({ exercises, filterOptions }: ExerciseSea
             type="search"
             value={filters.query}
             maxLength={MAX_QUERY_LENGTH}
-            onChange={event => updateFilter('query', event.target.value)}
+            onChange={(event) => updateFilter('query', event.target.value)}
             placeholder="e.g. deadlift, biceps, squat…"
             className="glass-strong w-full appearance-none rounded-2xl px-4 py-3 text-zinc-900 placeholder:text-zinc-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 dark:text-zinc-50 dark:placeholder:text-zinc-400"
           />
@@ -173,28 +179,28 @@ export default function ExerciseSearch({ exercises, filterOptions }: ExerciseSea
             label="Category"
             options={filterSelectOptions('All categories', filterOptions.categories)}
             value={filters.category}
-            onChange={value => updateFilter('category', value)}
+            onChange={(value) => updateFilter('category', value)}
           />
           <GlassSelect
             id="muscleGroup"
             label="Muscle group"
             options={filterSelectOptions('All muscle groups', filterOptions.muscleGroups)}
             value={filters.muscleGroup}
-            onChange={value => updateFilter('muscleGroup', value)}
+            onChange={(value) => updateFilter('muscleGroup', value)}
           />
           <GlassSelect
             id="movementPattern"
             label="Movement pattern"
             options={filterSelectOptions('All patterns', filterOptions.movementPatterns)}
             value={filters.movementPattern}
-            onChange={value => updateFilter('movementPattern', value)}
+            onChange={(value) => updateFilter('movementPattern', value)}
           />
           <GlassSelect
             id="mechanics"
             label="Mechanics"
             options={filterSelectOptions('All types', filterOptions.mechanics)}
             value={filters.mechanics}
-            onChange={value => updateFilter('mechanics', value)}
+            onChange={(value) => updateFilter('mechanics', value)}
           />
         </div>
 
@@ -217,7 +223,7 @@ export default function ExerciseSearch({ exercises, filterOptions }: ExerciseSea
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <fieldset className="glass inline-flex rounded-full p-1">
           <legend className="sr-only">Layout</legend>
-          {LAYOUT_OPTIONS.map(option => {
+          {LAYOUT_OPTIONS.map((option) => {
             const active = view.layout === option.value;
             return (
               <button
@@ -242,13 +248,13 @@ export default function ExerciseSearch({ exercises, filterOptions }: ExerciseSea
             label="Group by"
             options={GROUPING_OPTIONS}
             value={view.groupBy}
-            onChange={value => updateView({ groupBy: parseExerciseGrouping(value, view.groupBy) })}
+            onChange={(value) => updateView({ groupBy: parseExerciseGrouping(value, view.groupBy) })}
           />
         </div>
       </div>
 
       {results.length > 0 ? (
-        <ExerciseResults exercises={results} view={view} onSort={sortBy => updateView({ sortBy })} />
+        <ExerciseResults exercises={results} view={view} onSort={(sortBy) => updateView({ sortBy })} />
       ) : (
         <div className="glass rounded-3xl px-6 py-12 text-center">
           <p className="mb-2 text-lg font-medium text-zinc-900 dark:text-zinc-50">No exercises found</p>

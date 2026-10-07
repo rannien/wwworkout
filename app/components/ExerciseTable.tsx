@@ -33,10 +33,15 @@ export default function ExerciseTable({ caption, exercises, sortBy, onSort }: Ex
         </colgroup>
         <thead>
           <tr className="border-b border-zinc-900/10 dark:border-white/10">
-            {SORTABLE_COLUMNS.map(column => {
+            {SORTABLE_COLUMNS.map((column) => {
               const active = sortBy === column.sortBy;
               return (
-                <th key={column.sortBy} scope="col" aria-sort={active ? 'ascending' : undefined} className={HEADER_CELL}>
+                <th
+                  key={column.sortBy}
+                  scope="col"
+                  aria-sort={active ? 'ascending' : undefined}
+                  className={HEADER_CELL}
+                >
                   <button
                     type="button"
                     onClick={() => onSort(column.sortBy)}
@@ -54,12 +59,16 @@ export default function ExerciseTable({ caption, exercises, sortBy, onSort }: Ex
                 </th>
               );
             })}
-            <th scope="col" className={HEADER_CELL}>Category</th>
-            <th scope="col" className={HEADER_CELL}>Muscles</th>
+            <th scope="col" className={HEADER_CELL}>
+              Category
+            </th>
+            <th scope="col" className={HEADER_CELL}>
+              Muscles
+            </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-zinc-900/10 dark:divide-white/10">
-          {exercises.map(exercise => (
+          {exercises.map((exercise) => (
             <tr key={exercise.id} className="transition-colors hover:bg-white/40 dark:hover:bg-white/5">
               <th scope="row" className="px-4 py-3 font-medium text-zinc-900 dark:text-zinc-50">
                 <Link
@@ -73,14 +82,14 @@ export default function ExerciseTable({ caption, exercises, sortBy, onSort }: Ex
               <td className="px-4 py-3 text-zinc-700 capitalize dark:text-zinc-300">{exercise.mechanics}</td>
               <td className="px-4 py-3">
                 <div className="flex flex-wrap gap-1.5">
-                  {exercise.category.map(category => (
+                  {exercise.category.map((category) => (
                     <CategoryBadge key={category} category={category} />
                   ))}
                 </div>
               </td>
               <td className="px-4 py-3">
                 <div className="flex flex-wrap gap-1.5">
-                  {exercise.muscle_groups.map(muscle => (
+                  {exercise.muscle_groups.map((muscle) => (
                     <MuscleBadge key={muscle} muscle={muscle} />
                   ))}
                 </div>

@@ -16,10 +16,10 @@ export default async function ExerciseDetailPage({ params }: { params: Promise<{
 
   // Score and rank exercises by both movement pattern match and muscle group overlap
   const similarExercises = getAllExercises()
-    .filter(ex => ex.id !== exercise.id)
-    .map(ex => {
+    .filter((ex) => ex.id !== exercise.id)
+    .map((ex) => {
       const samePattern = ex.movement_pattern === exercise.movement_pattern;
-      const sharedMuscles = ex.muscle_groups.filter(mg => exercise.muscle_groups.includes(mg));
+      const sharedMuscles = ex.muscle_groups.filter((mg) => exercise.muscle_groups.includes(mg));
       const score = (samePattern ? 2 : 0) + sharedMuscles.length;
       return { ex, score, samePattern, sharedMuscles };
     })
@@ -29,16 +29,12 @@ export default async function ExerciseDetailPage({ params }: { params: Promise<{
 
   return (
     <>
-      <Breadcrumb items={[
-        { label: 'Home', href: '/' },
-        { label: 'Exercises', href: '/exercises' },
-        { label: exercise.name },
-      ]} />
+      <Breadcrumb
+        items={[{ label: 'Home', href: '/' }, { label: 'Exercises', href: '/exercises' }, { label: exercise.name }]}
+      />
 
       <article className="glass mb-10 rounded-4xl p-6 sm:p-8">
-        <h1 className="mb-6 text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-          {exercise.name}
-        </h1>
+        <h1 className="mb-6 text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">{exercise.name}</h1>
 
         <div className="grid gap-8 md:grid-cols-2">
           <section aria-labelledby="exercise-info">
@@ -48,9 +44,7 @@ export default async function ExerciseDetailPage({ params }: { params: Promise<{
             <dl className="divide-y divide-zinc-900/10 dark:divide-white/10">
               <div className="flex items-center justify-between gap-4 py-3">
                 <dt className="font-medium text-zinc-700 dark:text-zinc-300">Mechanics</dt>
-                <dd className="text-sm font-medium capitalize text-zinc-900 dark:text-zinc-50">
-                  {exercise.mechanics}
-                </dd>
+                <dd className="text-sm font-medium capitalize text-zinc-900 dark:text-zinc-50">{exercise.mechanics}</dd>
               </div>
               <div className="flex items-center justify-between gap-4 py-3">
                 <dt className="font-medium text-zinc-700 dark:text-zinc-300">Movement pattern</dt>
@@ -61,7 +55,7 @@ export default async function ExerciseDetailPage({ params }: { params: Promise<{
               <div className="flex items-center justify-between gap-4 py-3">
                 <dt className="font-medium text-zinc-700 dark:text-zinc-300">Category</dt>
                 <dd className="flex flex-wrap justify-end gap-2">
-                  {exercise.category.map(category => (
+                  {exercise.category.map((category) => (
                     <CategoryBadge key={category} category={category} />
                   ))}
                 </dd>
@@ -74,7 +68,7 @@ export default async function ExerciseDetailPage({ params }: { params: Promise<{
               Target Muscle Groups
             </h2>
             <div className="flex flex-wrap gap-2">
-              {exercise.muscle_groups.map(muscle => (
+              {exercise.muscle_groups.map((muscle) => (
                 <MuscleBadge key={muscle} muscle={muscle} size="md" />
               ))}
             </div>
@@ -82,10 +76,19 @@ export default async function ExerciseDetailPage({ params }: { params: Promise<{
             <div className="glass-strong mt-8 rounded-2xl p-4">
               <h3 className="mb-2 font-semibold text-zinc-800 dark:text-zinc-200">Quick Info</h3>
               <ul className="list-inside list-disc space-y-1 text-sm text-zinc-700 dark:text-zinc-300">
-                <li><strong className="capitalize">{exercise.mechanics}</strong> movement</li>
-                <li>Works <strong>{exercise.muscle_groups.length}</strong> muscle group{exercise.muscle_groups.length !== 1 ? 's' : ''}</li>
-                <li><strong className="capitalize">{exercise.movement_pattern}</strong> movement pattern</li>
-                <li><strong className="capitalize">{exercise.category.join(', ')}</strong> body exercise</li>
+                <li>
+                  <strong className="capitalize">{exercise.mechanics}</strong> movement
+                </li>
+                <li>
+                  Works <strong>{exercise.muscle_groups.length}</strong> muscle group
+                  {exercise.muscle_groups.length !== 1 ? 's' : ''}
+                </li>
+                <li>
+                  <strong className="capitalize">{exercise.movement_pattern}</strong> movement pattern
+                </li>
+                <li>
+                  <strong className="capitalize">{exercise.category.join(', ')}</strong> body exercise
+                </li>
               </ul>
             </div>
           </section>
@@ -110,13 +113,11 @@ export default async function ExerciseDetailPage({ params }: { params: Promise<{
                         {similar.movement_pattern}
                       </span>
                     )}
-                    {sharedMuscles.map(muscle => (
+                    {sharedMuscles.map((muscle) => (
                       <MuscleBadge key={muscle} muscle={muscle} />
                     ))}
                   </div>
-                  <p className="mt-auto text-xs capitalize text-zinc-700 dark:text-zinc-300">
-                    {similar.mechanics}
-                  </p>
+                  <p className="mt-auto text-xs capitalize text-zinc-700 dark:text-zinc-300">{similar.mechanics}</p>
                 </ExerciseCard>
               </li>
             ))}
@@ -136,7 +137,7 @@ export default async function ExerciseDetailPage({ params }: { params: Promise<{
 
 export async function generateStaticParams() {
   const exercises = getAllExercises();
-  return exercises.map(exercise => ({
+  return exercises.map((exercise) => ({
     id: exercise.id,
   }));
 }
