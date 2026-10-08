@@ -28,12 +28,12 @@
       ],
       [
         "2",
-        "Squat",
+        "Barbell Back Squat",
         ["lower"],
         "squat",
         "compound",
         "1675613408294",
-        "1791371330371",
+        "1791450233496",
         "NULL",
         "NULL",
         ["quadriceps", "glutes"]
@@ -52,12 +52,12 @@
       ],
       [
         "4",
-        "Walking Lunge",
+        "Walking Lunges",
         ["lower"],
         "lunge",
         "compound",
         "1675613441440",
-        "1791371330371",
+        "1791450233496",
         "NULL",
         "NULL",
         ["quadriceps", "glutes", "hamstrings"]
@@ -340,24 +340,24 @@
       ],
       [
         "28",
-        "Dumbbell Lateral Raise",
+        "Lateral Raises",
         ["upper"],
         "push",
         "isolation",
         "1675893526352",
-        "1675893526352",
+        "1791450233496",
         "NULL",
         "NULL",
         ["shoulders"]
       ],
       [
         "29",
-        "Face Pull (rope)",
+        "Face Pull",
         ["upper"],
         "pull",
         "compound",
         "1675893535792",
-        "1791403738793",
+        "1791450233496",
         "NULL",
         "NULL",
         ["rear delts", "upper back"]
@@ -460,12 +460,12 @@
       ],
       [
         "38",
-        "Dumbbell Bi-Lateral Hammer Curl",
+        "Hammer Curls",
         ["upper"],
         "pull",
         "isolation",
         "1675895909819",
-        "1791371330371",
+        "1791450233496",
         "NULL",
         "NULL",
         ["biceps"]
@@ -688,12 +688,12 @@
       ],
       [
         "57",
-        "Seated Cable Row",
+        "Cable Row",
         ["upper"],
         "pull",
         "compound",
         "1675896197009",
-        "1791371330371",
+        "1791450233496",
         "NULL",
         "NULL",
         ["lats", "upper back", "biceps"]
@@ -844,12 +844,12 @@
       ],
       [
         "71",
-        "Standing Calf Raise",
+        "Calf Raises",
         ["lower"],
         "push",
         "isolation",
         "1675896349419",
-        "1791371330371",
+        "1791450233496",
         "NULL",
         "NULL",
         ["calves"]
@@ -925,6 +925,114 @@
         "NULL",
         "NULL",
         ["abs"]
+      ],
+      [
+        "79",
+        "Bent-Over Dumbbell Rows",
+        ["upper"],
+        "pull",
+        "compound",
+        "1791450187866",
+        "1791450233496",
+        "NULL",
+        "NULL",
+        ["lats", "upper back", "biceps"]
+      ],
+      [
+        "80",
+        "Close-Grip Bench Press",
+        ["upper"],
+        "push",
+        "compound",
+        "1791450187866",
+        "1791450187866",
+        "NULL",
+        "NULL",
+        ["triceps", "chest", "shoulders"]
+      ],
+      [
+        "81",
+        "Incline Dumbbell Press",
+        ["upper"],
+        "push",
+        "compound",
+        "1791450187866",
+        "1791450187866",
+        "NULL",
+        "NULL",
+        ["chest", "shoulders", "triceps"]
+      ],
+      [
+        "82",
+        "Lat Pulldown",
+        ["upper"],
+        "pull",
+        "compound",
+        "1791450187866",
+        "1791450187866",
+        "NULL",
+        "NULL",
+        ["lats", "upper back", "biceps"]
+      ],
+      [
+        "83",
+        "Pec Deck",
+        ["upper"],
+        "push",
+        "isolation",
+        "1791450187866",
+        "1791450187866",
+        "NULL",
+        "NULL",
+        ["chest"]
+      ],
+      [
+        "84",
+        "Seated Arnold Press",
+        ["upper"],
+        "push",
+        "compound",
+        "1791450187866",
+        "1791450187866",
+        "NULL",
+        "NULL",
+        ["shoulders", "triceps"]
+      ],
+      [
+        "85",
+        "Seated Dumbbell Overhead Press",
+        ["upper"],
+        "push",
+        "compound",
+        "1791450187866",
+        "1791450187866",
+        "NULL",
+        "NULL",
+        ["shoulders", "triceps"]
+      ],
+      [
+        "86",
+        "Overhead Triceps Extension",
+        ["upper"],
+        "push",
+        "isolation",
+        "1791450187866",
+        "1791450187866",
+        "NULL",
+        "NULL",
+        ["triceps"]
+      ],
+      [
+        "87",
+        "Cable Push Out",
+        ["upper"],
+        "push",
+        "isolation",
+        "1791450187866",
+        "1791450187866",
+        "NULL",
+        "NULL",
+        ["triceps"]
       ]
     ]
   }
