@@ -1033,6 +1033,30 @@
         "NULL",
         "NULL",
         ["triceps"]
+      ],
+      [
+        "88",
+        "Cable Lateral Raises",
+        ["upper"],
+        "push",
+        "isolation",
+        "1791450508435",
+        "1791450508435",
+        "NULL",
+        "NULL",
+        ["shoulders"]
+      ],
+      [
+        "89",
+        "Standing Cable Row",
+        ["upper"],
+        "pull",
+        "compound",
+        "1791450508435",
+        "1791450508435",
+        "NULL",
+        "NULL",
+        ["lats", "upper back", "biceps"]
       ]
     ]
   }
