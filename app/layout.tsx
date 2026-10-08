@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import SiteHeader from '@/app/components/SiteHeader';
 import './globals.css';
@@ -18,6 +18,10 @@ export const metadata: Metadata = {
   description: 'Browse and filter exercises by muscle group, category, and mechanics.',
 };
 
+export const viewport: Viewport = {
+  viewportFit: 'cover',
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -33,7 +37,10 @@ export default function RootLayout({
           Skip to content
         </a>
         <SiteHeader />
-        <main id="main" className="mx-auto w-full max-w-7xl px-4 pt-8 pb-16 sm:px-8">
+        <main
+          id="main"
+          className="mx-auto w-full max-w-7xl px-4 pt-8 pb-[calc(4rem+env(safe-area-inset-bottom))] sm:px-8"
+        >
           {children}
         </main>
       </body>
