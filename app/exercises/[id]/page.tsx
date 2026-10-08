@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import Breadcrumb from '@/app/components/Breadcrumb';
 import CategoryBadge from '@/app/components/CategoryBadge';
 import ExerciseCard from '@/app/components/ExerciseCard';
+import ExerciseVideoLink from '@/app/components/ExerciseVideoLink';
 import MuscleBadge from '@/app/components/MuscleBadge';
 
 export default async function ExerciseDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -34,7 +35,10 @@ export default async function ExerciseDetailPage({ params }: { params: Promise<{
       />
 
       <article className="glass mb-10 rounded-4xl p-6 sm:p-8">
-        <h1 className="mb-6 text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">{exercise.name}</h1>
+        <div className="mb-6 flex items-start justify-between gap-4">
+          <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">{exercise.name}</h1>
+          <ExerciseVideoLink exerciseName={exercise.name} />
+        </div>
 
         <div className="grid gap-8 md:grid-cols-2">
           <section aria-labelledby="exercise-info">
