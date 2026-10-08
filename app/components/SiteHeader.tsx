@@ -16,7 +16,7 @@ export default function SiteHeader() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 mx-auto w-full max-w-7xl px-4 pt-4 sm:px-8">
+    <header className="sticky top-0 z-50 mx-auto w-full max-w-7xl px-4 pt-[max(1rem,env(safe-area-inset-top))] sm:px-8">
       <nav aria-label="Main" className="glass flex items-center justify-between gap-2 rounded-full py-1.5 pr-1.5 pl-2">
         <Link
           href="/"
