@@ -1,290 +1,126 @@
-# WWWorkout - Exercise Database
+# WWWorkout
 
-A modern, type-safe exercise database built with Next.js 16, TypeScript, and JSON. Browse, search, and filter through 100+ exercises with instant performance using in-memory caching.
+An exercise catalogue: pick a muscle, get every exercise that hits it. 87 exercises, each tagged with
+the muscle groups it works, its movement pattern and whether it is a compound or isolation lift —
+browsable by people and served as JSON for other apps.
 
-## 🚀 Quick Start
+**Live:** https://wwworkout.vercel.app
+
+## Features
+
+- **Home** (`/`) — a body map and a muscle × movement matrix showing coverage (empty cells are
+  gaps), plus an index of every exercise by movement pattern.
+- **Exercise browser** (`/exercises`) — search by name, muscle or movement and filter by category,
+  muscle group, mechanics and movement pattern; tap any badge to filter by it. Show results as
+  cards or a table, grouped by movement pattern or muscle group and sorted by name, movement or
+  mechanics. All filter and view state lives in the URL, so every view is shareable.
+- **Exercise detail** (`/exercises/[id]`) — mechanics, movement, category and target muscles, a
+  YouTube form-video search link, and up to eight similar exercises ranked by shared movement
+  pattern and muscle overlap. Every detail page is statically generated.
+- **JSON API** (`/api/exercises`) — the catalogue for other apps; see below.
+- Light and dark themes, responsive "liquid glass" UI.
+
+## The catalogue
+
+The data is a static export in [exercises-latest.json](exercises-latest.json) (an SQL dump shape:
+one `header` row plus `rows`), parsed once and cached in memory by
+[lib/exerciseDb.ts](lib/exerciseDb.ts). Its vocabulary:
+
+| Field              | Values                                                       |
+| ------------------ | ------------------------------------------------------------ |
+| `category`         | `lower`, `upper`, `core` (an exercise can have several)      |
+| `movement_pattern` | `push`, `pull`, `bend`, `squat`, `lunge`, `flex`             |
+| `mechanics`        | `compound`, `isolation`                                      |
+| `muscle_groups`    | 14 lowercase muscle names, e.g. `quadriceps`, `lower back`   |
+
+To change the catalogue, edit the JSON file and redeploy. Exercise **names** are a public contract:
+[Rep Track](https://rep-track-ten.vercel.app) joins its workout plans to this catalogue by exact
+name, so renaming an exercise here breaks the match there.
+
+## API
+
+`GET /api/exercises` — every exercise, optionally filtered:
+
+| Parameter     | Matches                                                     |
+| ------------- | ----------------------------------------------------------- |
+| `q`           | substring of the name, a muscle group or the movement       |
+| `category`    | one category                                                |
+| `muscleGroup` | one muscle group                                            |
+| `mechanics`   | `compound` or `isolation`                                   |
+| `pattern`     | one movement pattern                                        |
+
+```jsonc
+// GET /api/exercises?category=lower&mechanics=compound
+{
+  "exercises": [
+    {
+      "id": "1",
+      "name": "Deadlift",
+      "category": ["lower"],
+      "movement_pattern": "bend",
+      "mechanics": "compound",
+      "muscle_groups": ["hamstrings", "glutes", "lower back", "quadriceps"],
+      "detail_url": "https://wwworkout.vercel.app/exercises/1",
+      "video_url": "https://www.youtube.com/results?search_query=Deadlift+form",
+      "created_at": "1675529768665",
+      "updated_at": "1791371330371",
+      "created_by_id": null,
+      "updated_by_id": null
+      // …
+    }
+  ],
+  "count": 13,
+  "filters": { "query": null, "category": "lower", "muscleGroup": null, "mechanics": "compound", "pattern": null }
+}
+```
+
+`detail_url` (absolute, on the serving origin) and `video_url` are ready-made links, so consumers
+don't have to rebuild URLs. Two alternative shapes:
+
+- `?filters=true` — the filter vocabulary: `total`, `categories`, `muscleGroups`, `mechanics`,
+  `movementPatterns`.
+- `?stats=true` — counts: `total`, `byCategory`, `byMechanics`, `byMovementPattern`.
+
+Changes to the response are additive only — Rep Track depends on it.
+
+## Tech stack
+
+Next.js 16 (App Router, React 19) · TypeScript · Tailwind CSS v4 · `node --test` · oxlint +
+oxfmt · npm. Deployed on Vercel. No database and no runtime dependencies beyond Next.js and React.
+
+## Getting started
 
 ```bash
 npm install
-npm run dev
+npm run dev     # http://localhost:3000
 ```
 
-Visit [http://localhost:3000](http://localhost:3000)
+| Command                           | What it does                                            |
+| --------------------------------- | ------------------------------------------------------- |
+| `npm run build` / `npm run start` | production build / serve it                             |
+| `npm test`                        | unit tests for the pure logic in `lib/` (`*.test.mts`)  |
+| `npm run lint`                    | oxlint, warnings fail                                   |
+| `npm run format` / `format:check` | oxfmt                                                   |
 
-## 📱 Pages
+CodeQL static analysis (SAST) runs on every push to `main`, every pull request and weekly.
 
-- **Homepage** (`/`) - Overview and statistics
-- **Browse All** (`/exercises`) - View all exercises with details
-- **Search** (`/exercises/search`) - Interactive search and filtering
-- **Exercise Details** (`/exercises/[id]`) - Individual exercise pages with alternatives
-
-## ✨ Features
-
-- ✅ **100+ Exercises** - Comprehensive exercise library
-- ✅ **Type-Safe** - Full TypeScript support
-- ✅ **Fast Search** - Real-time filtering with debouncing
-- ✅ **Advanced Filters** - Filter by category, muscle group, mechanics, and movement pattern
-- ✅ **In-Memory Caching** - Instant performance after first load
-- ✅ **REST API** - Full-featured API endpoints
-- ✅ **Server-Side Rendering** - SEO-friendly and fast initial loads
-- ✅ **Dark Mode** - Beautiful UI in light and dark themes
-- ✅ **Responsive Design** - Works on all devices
-
-## 🔧 Tech Stack
-
-- **Framework**: Next.js 16.1.6 (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Data Source**: JSON file (exercises-latest.json)
-- **Caching**: In-memory
-
-## 📚 Documentation
-
-### Getting Started
-- **[GETTING_STARTED.md](./GETTING_STARTED.md)** - Step-by-step guide for beginners
-- **[QUICK_REFERENCE.md](./QUICK_REFERENCE.md)** - One-page cheat sheet
-
-### Comprehensive Guides
-- **[EXERCISE_DATABASE_GUIDE.md](./EXERCISE_DATABASE_GUIDE.md)** - Full user guide
-- **[IMPLEMENTATION_SUMMARY.md](./IMPLEMENTATION_SUMMARY.md)** - What was built
-
-### Technical Documentation
-- **[lib/README.md](./lib/README.md)** - Technical documentation
-- **[lib/examples.tsx](./lib/examples.tsx)** - 13 code examples
-- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - System architecture
-
-## 💻 Usage Examples
-
-### Server Component (Direct Import)
-
-```tsx
-import { getAllExercises, filterByCategory } from '@/lib/exerciseDb';
-
-export default function MyPage() {
-  const exercises = getAllExercises();
-  const lowerBody = filterByCategory('lower');
-  
-  return (
-    <div>
-      <h1>Total: {exercises.length}</h1>
-      {lowerBody.map(ex => (
-        <div key={ex.id}>{ex.name}</div>
-      ))}
-    </div>
-  );
-}
-```
-
-### API Route
-
-```typescript
-// GET /api/exercises?category=lower&mechanics=compound
-const response = await fetch('/api/exercises?category=lower&mechanics=compound');
-const { exercises, count } = await response.json();
-```
-
-### Client Component
-
-```tsx
-'use client';
-
-import { useState, useEffect } from 'react';
-
-export default function MySearch() {
-  const [exercises, setExercises] = useState([]);
-  const [query, setQuery] = useState('');
-
-  useEffect(() => {
-    if (query) {
-      fetch(`/api/exercises?q=${query}`)
-        .then(res => res.json())
-        .then(data => setExercises(data.exercises));
-    }
-  }, [query]);
-
-  return (
-    <input
-      value={query}
-      onChange={(e) => setQuery(e.target.value)}
-      placeholder="Search exercises..."
-    />
-  );
-}
-```
-
-## 🔍 Available Functions
-
-### Query Functions
-- `getAllExercises()` - Get all exercises
-- `getExerciseById(id)` - Get single exercise
-- `searchExercises(query)` - Search by name, muscle, or pattern
-- `filterByCategory(category)` - Filter by category (lower, upper, etc.)
-- `filterByMuscleGroup(muscleGroup)` - Filter by muscle group
-- `filterByMechanics(mechanics)` - Filter by compound/isolation
-- `filterByMovementPattern(pattern)` - Filter by movement pattern
-- `filterExercises(filters)` - Multi-criteria filtering
-
-### Metadata Functions
-- `getUniqueCategories()` - Get all categories
-- `getUniqueMuscleGroups()` - Get all muscle groups
-- `getUniqueMechanics()` - Get mechanics types
-- `getUniqueMovementPatterns()` - Get movement patterns
-- `getExerciseStats()` - Get comprehensive statistics
-
-## 🌐 API Endpoints
-
-### GET `/api/exercises`
-
-**Query Parameters:**
-- `q` - Search query
-- `category` - Filter by category
-- `muscleGroup` - Filter by muscle group
-- `mechanics` - Filter by mechanics type
-- `pattern` - Filter by movement pattern
-- `filters=true` - Get filter options
-- `stats=true` - Get statistics
-
-**Examples:**
-```bash
-# Search
-GET /api/exercises?q=squat
-
-# Filter by category
-GET /api/exercises?category=lower
-
-# Multiple filters
-GET /api/exercises?category=lower&mechanics=compound
-
-# Get filter options
-GET /api/exercises?filters=true
-
-# Get statistics
-GET /api/exercises?stats=true
-```
-
-## 📊 Data Structure
-
-```typescript
-interface Exercise {
-  id: string;
-  name: string;
-  category: string[];            // ["lower", "upper"]
-  movement_pattern: string;       // "push", "pull", "squat", "bend"
-  mechanics: string;              // "compound" or "isolation"
-  muscle_groups: string[];        // ["quadriceps", "glutes"]
-  created_at: string;
-  updated_at: string;
-  created_by_id: string | null;
-  updated_by_id: string | null;
-}
-```
-
-## 🎯 Project Structure
+## Project layout
 
 ```
-wwworkout/
-├── exercises-latest.json          # Exercise data (~100+ exercises)
-├── lib/
-│   ├── exerciseDb.ts             # Core database functions
-│   ├── examples.tsx              # Usage examples
-│   └── README.md                 # Technical docs
-├── app/
-│   ├── page.tsx                  # Homepage
-│   ├── exercises/
-│   │   ├── page.tsx              # Browse all exercises
-│   │   ├── [id]/
-│   │   │   └── page.tsx          # Exercise detail page
-│   │   └── search/
-│   │       └── page.tsx          # Search page
-│   ├── components/
-│   │   └── ExerciseSearch.tsx    # Search component
-│   └── api/
-│       └── exercises/
-│           └── route.ts          # REST API
-└── Documentation files...
+app/
+  page.tsx                 home: body map, muscle matrix, movement index
+  exercises/page.tsx       search, filters and list views
+  exercises/[id]/page.tsx  exercise detail + similar exercises
+  api/exercises/route.ts   JSON API
+  components/              UI components
+lib/
+  exerciseDb.ts            loads and queries the catalogue
+  exerciseFilters.ts       filter matching and URL (de)serialisation
+  exerciseList.ts          layout, grouping and sorting of result lists
+  exerciseLinks.ts         detail-page and video URLs
+exercises-latest.json      the catalogue data
 ```
 
-## 🚀 Build & Deploy
+## License
 
-### Development
-```bash
-npm run dev
-```
-
-### Production Build
-```bash
-npm run build
-npm run start
-```
-
-### Deploy on Vercel
-```bash
-vercel deploy
-```
-
-The exercise database works perfectly on Vercel with static site generation (SSG) for all pages.
-
-## ⚡ Performance
-
-- **First Load**: <100ms (JSON parsing + caching)
-- **Subsequent Queries**: <10ms (in-memory cache)
-- **Search Results**: Real-time with 300ms debounce
-- **API Response**: <50ms average
-- **Bundle Size**: Optimized with Next.js
-
-## 💡 Use Cases
-
-- 🏋️ Workout routine builders
-- 📱 Fitness mobile apps
-- 📊 Exercise tracking systems
-- 🎓 Educational fitness platforms
-- 💪 Personal training apps
-- 📝 Exercise reference libraries
-
-## 🔄 When to Migrate to a Real Database
-
-Consider PostgreSQL/MongoDB when:
-- Need to add/edit/delete exercises frequently
-- Multiple users creating content
-- Dataset grows beyond 10MB
-- Need complex relationships between data
-- Require user-generated content with persistence
-
-## 📖 Learn More
-
-### Quick Resources
-- [Getting Started Guide](./GETTING_STARTED.md) - Start here!
-- [Quick Reference](./QUICK_REFERENCE.md) - Cheat sheet
-- [Code Examples](./lib/examples.tsx) - Practical examples
-
-### Deep Dive
-- [Exercise Database Guide](./EXERCISE_DATABASE_GUIDE.md) - Full guide
-- [Architecture Overview](./ARCHITECTURE.md) - System design
-- [Implementation Summary](./IMPLEMENTATION_SUMMARY.md) - What was built
-
-### Next.js Resources
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Learn Next.js](https://nextjs.org/learn)
-- [Next.js GitHub](https://github.com/vercel/next.js)
-
-## 🤝 Contributing
-
-This is a personal project, but feel free to fork and customize for your own needs!
-
-## 📝 License
-
-MIT License - feel free to use this for your own projects.
-
-## 🎉 Credits
-
-- Built with [Next.js](https://nextjs.org)
-- Styled with [Tailwind CSS](https://tailwindcss.com)
-- Exercise data structure inspired by fitness industry standards
-
----
-
-**Status**: ✅ Production Ready  
-**Version**: 1.0  
-**Last Updated**: 2024
-
-Start building your fitness app today! 💪
+MIT
