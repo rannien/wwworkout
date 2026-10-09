@@ -8,6 +8,7 @@ import {
   getUniqueMovementPatterns,
   getExerciseStats,
 } from '@/lib/exerciseDb';
+import { withExerciseLinks } from '@/lib/exerciseLinks';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -46,7 +47,7 @@ export async function GET(request: NextRequest) {
   });
 
   return NextResponse.json({
-    exercises,
+    exercises: exercises.map((exercise) => withExerciseLinks(exercise, request.nextUrl.origin)),
     count: exercises.length,
     filters: {
       query,

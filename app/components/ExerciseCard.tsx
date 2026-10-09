@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { exerciseDetailPath } from '@/lib/exerciseLinks';
 
 interface ExerciseCardProps {
   id: string;
@@ -12,7 +13,7 @@ export default function ExerciseCard({ id, name, children }: ExerciseCardProps) 
     <article className="glass relative flex w-full flex-col gap-3 rounded-3xl p-5 transition hover:shadow-xl motion-safe:hover:-translate-y-0.5">
       <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
         <Link
-          href={`/exercises/${id}`}
+          href={exerciseDetailPath(id)}
           className="after:absolute after:inset-0 after:rounded-3xl focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-sky-500"
         >
           {name}
