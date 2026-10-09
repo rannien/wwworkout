@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { exerciseDetailPath } from '@/lib/exerciseLinks';
 import {
   filterByMovementPattern,
   getAllExercises,
@@ -104,7 +105,7 @@ export default function Home() {
                 {patternExercises.map((exercise, index) => (
                   <li key={exercise.id} className="flex items-center gap-1">
                     <Link
-                      href={`/exercises/${exercise.id}`}
+                      href={exerciseDetailPath(exercise.id)}
                       className="rounded-md px-0.5 text-zinc-800 underline decoration-zinc-900/20 underline-offset-4 transition hover:text-zinc-950 hover:decoration-zinc-900 focus-visible:outline-2 focus-visible:outline-sky-500 dark:text-zinc-200 dark:decoration-white/25 dark:hover:text-white dark:hover:decoration-white"
                     >
                       {exercise.name}

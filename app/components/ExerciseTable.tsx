@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { exerciseDetailPath } from '@/lib/exerciseLinks';
 import type { Exercise } from '@/lib/exerciseDb';
 import type { ExerciseSort } from '@/lib/exerciseList';
 import CategoryBadge from '@/app/components/CategoryBadge';
@@ -72,7 +73,7 @@ export default function ExerciseTable({ caption, exercises, sortBy, onSort }: Ex
             <tr key={exercise.id} className="transition-colors hover:bg-white/40 dark:hover:bg-white/5">
               <th scope="row" className="px-4 py-3 font-medium text-zinc-900 dark:text-zinc-50">
                 <Link
-                  href={`/exercises/${exercise.id}`}
+                  href={exerciseDetailPath(exercise.id)}
                   className="rounded-md underline decoration-zinc-900/20 underline-offset-4 hover:decoration-zinc-900 focus-visible:outline-2 focus-visible:outline-sky-600 dark:decoration-white/25 dark:hover:decoration-white"
                 >
                   {exercise.name}
